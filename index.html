@@ -3,2136 +3,1633 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>School SMP IV — پادشاهی مدرسه</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+<title>School SMP V — پادشاهی سرور</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #f0d080;
-    --gold-dark: #8b6914;
-    --crimson: #8b0000;
-    --crimson-light: #c0392b;
-    --emerald: #1a7a4a;
-    --emerald-light: #27ae60;
-    --bg-deep: #080604;
-    --bg-dark: #0f0b07;
-    --bg-card: #161008;
-    --bg-card2: #1c1409;
-    --text-main: #e8d5a3;
-    --text-dim: #a08050;
-    --border-gold: rgba(201,168,76,0.35);
-    --border-gold-bright: rgba(201,168,76,0.7);
-    --shadow-gold: 0 0 30px rgba(201,168,76,0.15);
-    --shadow-gold-intense: 0 0 60px rgba(201,168,76,0.3);
-  }
+:root {
+  --gold: #c9a84c;
+  --gold-light: #f0c040;
+  --gold-pale: #ffe08a;
+  --gold-dim: #7a5f1f;
+  --bg: #0a0a14;
+  --bg2: #0f0f1e;
+  --bg3: #13132a;
+  --card: #111128;
+  --card2: #16163a;
+  --text: #e8dfc8;
+  --text-dim: #9b8f6e;
+  --red: #c0392b;
+  --red-light: #e74c3c;
+  --green: #27ae60;
+  --green-light: #2ecc71;
+  --purple: #8e44ad;
+  --border: #2a2a4a;
+  --border-gold: rgba(201,168,76,0.35);
+  --shadow-gold: 0 0 18px rgba(201,168,76,0.18);
+  --glow: 0 0 30px rgba(240,192,64,0.25);
+}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'Tahoma', 'Arial', sans-serif;
-    background: var(--bg-deep);
-    color: var(--text-main);
-    direction: rtl;
-    overflow-x: hidden;
-    min-height: 100vh;
-  }
+body {
+  font-family: 'Raleway', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.8;
+  font-size: 15px;
+}
 
-  /* ─── NOISE TEXTURE OVERLAY ─── */
-  body::before {
-    content:'';
-    position:fixed; inset:0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none;
-    z-index:0;
-    opacity:.4;
-  }
+/* ─── CANVAS BG ─── */
+#particles-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  /* ─── SCROLLBAR ─── */
-  ::-webkit-scrollbar { width:6px; }
-  ::-webkit-scrollbar-track { background:#0a0806; }
-  ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius:3px; }
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,20,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-gold);
+  padding: 0 24px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  /* ─── NAV ─── */
-  nav {
-    position: fixed; top:0; left:0; right:0; z-index:1000;
-    background: linear-gradient(180deg, rgba(8,6,4,0.98) 0%, rgba(8,6,4,0.85) 100%);
-    border-bottom: 1px solid var(--border-gold);
-    backdrop-filter: blur(12px);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-  .nav-brand {
-    font-family: 'Cinzel Decorative', serif;
-    color: var(--gold);
-    font-size: 1rem;
-    text-shadow: 0 0 20px rgba(201,168,76,0.5);
-    letter-spacing: 2px;
-  }
-  .nav-links {
-    display: flex;
-    gap: 0.3rem;
-    list-style: none;
-    flex-direction: row-reverse;
-  }
-  .nav-links a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 0.8rem;
-    padding: 6px 12px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    transition: all 0.3s;
-    white-space: nowrap;
-  }
-  .nav-links a:hover {
-    color: var(--gold);
-    border-color: var(--border-gold);
-    background: rgba(201,168,76,0.05);
-  }
+.nav-brand {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--gold-light);
+  letter-spacing: 2px;
+  text-shadow: 0 0 12px var(--gold);
+  white-space: nowrap;
+}
 
-  /* ─── HERO ─── */
-  #hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding-top: 64px;
-  }
+.nav-links {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 
-  .hero-bg {
-    position: absolute; inset:0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,105,20,0.12) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(139,0,0,0.1) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 80% 20%, rgba(26,122,74,0.08) 0%, transparent 60%),
-      linear-gradient(180deg, #080604 0%, #0d0905 50%, #080604 100%);
-  }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.25s;
+  border: 1px solid transparent;
+  font-weight: 500;
+}
 
-  /* Animated particles */
-  .particles {
-    position:absolute; inset:0;
-    pointer-events:none;
-  }
-  .particle {
-    position:absolute;
-    width:2px; height:2px;
-    background: var(--gold);
-    border-radius:50%;
-    animation: float-up linear infinite;
-    opacity:0;
-  }
-  @keyframes float-up {
-    0% { opacity:0; transform: translateY(100vh) scale(0); }
-    10% { opacity:1; }
-    90% { opacity:0.3; }
-    100% { opacity:0; transform: translateY(-20vh) scale(1.5); }
-  }
+.nav-links a:hover {
+  color: var(--gold-light);
+  border-color: var(--border-gold);
+  background: rgba(201,168,76,0.07);
+}
 
-  .hero-content {
-    position: relative; z-index:2;
-    text-align: center;
-    padding: 2rem;
-    max-width: 900px;
-    animation: hero-reveal 1.2s ease-out forwards;
-  }
-  @keyframes hero-reveal {
-    from { opacity:0; transform: translateY(40px); }
-    to { opacity:1; transform: translateY(0); }
-  }
+/* hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 5px;
+  padding: 6px;
+}
+.hamburger span {
+  width: 24px; height: 2px;
+  background: var(--gold);
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
 
-  .hero-flag {
-    width: 320px;
-    max-width: 85vw;
-    border: 3px solid var(--gold);
-    box-shadow: 0 0 50px rgba(201,168,76,0.3), 0 0 100px rgba(201,168,76,0.1);
-    border-radius: 4px;
-    margin-bottom: 2.5rem;
-    animation: flag-glow 3s ease-in-out infinite alternate;
-  }
-  @keyframes flag-glow {
-    from { box-shadow: 0 0 50px rgba(201,168,76,0.3), 0 0 100px rgba(201,168,76,0.1); }
-    to { box-shadow: 0 0 70px rgba(201,168,76,0.5), 0 0 130px rgba(201,168,76,0.2); }
-  }
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 60px; left: 0; right: 0;
+  background: rgba(10,10,22,0.98);
+  border-bottom: 1px solid var(--border-gold);
+  z-index: 999;
+  padding: 16px 0;
+  flex-direction: column;
+}
+.mobile-menu a {
+  color: var(--text);
+  text-decoration: none;
+  padding: 12px 24px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  transition: all 0.2s;
+}
+.mobile-menu a:hover { color: var(--gold-light); padding-right: 32px; }
+.mobile-menu.open { display: flex; }
 
-  .hero-subtitle-top {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    letter-spacing: 5px;
-    color: var(--gold-dark);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  .hero-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(2.2rem, 5vw, 4rem);
-    color: var(--gold);
-    text-shadow: 0 0 40px rgba(201,168,76,0.6), 0 4px 20px rgba(0,0,0,0.8);
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-    animation: title-pulse 4s ease-in-out infinite alternate;
-  }
-  @keyframes title-pulse {
-    from { text-shadow: 0 0 40px rgba(201,168,76,0.6), 0 4px 20px rgba(0,0,0,0.8); }
-    to { text-shadow: 0 0 70px rgba(201,168,76,0.9), 0 4px 30px rgba(0,0,0,0.9); }
-  }
-  .hero-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 1.5rem auto;
-    max-width: 500px;
-  }
-  .hero-divider-line {
-    flex:1;
-    height:1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-  .hero-divider span { color: var(--gold); font-size: 1.2rem; }
-  .hero-desc {
-    font-size: 1.05rem;
-    color: var(--text-dim);
-    line-height: 2;
-    max-width: 600px;
-    margin: 0 auto 2.5rem;
-  }
-  .hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
-    background-size: 200% 200%;
-    color: #0a0806;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 14px 40px;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    text-decoration: none;
-    animation: btn-shimmer 3s ease infinite;
-    box-shadow: 0 0 30px rgba(201,168,76,0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .hero-cta:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 50px rgba(201,168,76,0.6);
-  }
-  @keyframes btn-shimmer {
-    0%,100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
+/* ─── MAIN LAYOUT ─── */
+main { position: relative; z-index: 1; padding-top: 60px; }
 
-  /* ─── SECTION BASE ─── */
-  section {
-    position: relative;
-    padding: 6rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  .section-full { max-width: 100%; padding-left: 0; padding-right: 0; }
-  .section-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+section.visible { opacity: 1; transform: translateY(0); }
 
-  .section-header {
-    text-align: center;
-    margin-bottom: 4rem;
-  }
-  .section-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 6px;
-    color: var(--gold-dark);
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 0.8rem;
-  }
-  .section-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
-    color: var(--gold);
-    text-shadow: 0 0 30px rgba(201,168,76,0.4);
-    margin-bottom: 1rem;
-  }
-  .ornament {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin: 1.2rem auto;
-  }
-  .ornament-line {
-    flex:1; max-width: 200px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-gold-bright), transparent);
-  }
-  .ornament span { color: var(--gold); font-size: 1rem; }
+/* ─── DIVIDER ─── */
+.royal-divider {
+  text-align: center;
+  color: var(--gold-dim);
+  font-size: 18px;
+  letter-spacing: 8px;
+  margin: 0 auto 50px;
+  padding: 12px 0;
+}
 
-  /* ─── SEPARATOR ─── */
-  .sep {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
-    margin: 0;
-  }
+/* ─── SECTION HEADER ─── */
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
 
-  /* ─── CARD BASE ─── */
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .card::before {
-    content:'';
-    position:absolute; top:0; left:0; right:0;
-    height:2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  }
-  .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 40px rgba(201,168,76,0.15);
-  }
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(22px, 4vw, 34px);
+  color: var(--gold-light);
+  letter-spacing: 3px;
+  text-shadow: 0 0 20px rgba(240,192,64,0.4);
+  display: inline-block;
+  padding: 10px 32px;
+  border: 1px solid var(--border-gold);
+  background: linear-gradient(180deg, rgba(201,168,76,0.06) 0%, transparent 100%);
+  position: relative;
+}
+.section-title::before,
+.section-title::after {
+  content: '⚜';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: 14px;
+}
+.section-title::before { right: 10px; }
+.section-title::after { left: 10px; }
 
-  /* ─── SECTION 1: SHOP ─── */
-  #shop { }
-  .shop-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-  .shop-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-  .shop-item::after {
-    content:'';
-    position:absolute; inset:0;
-    background: linear-gradient(135deg, rgba(201,168,76,0.03) 0%, transparent 60%);
-    pointer-events:none;
-  }
-  .shop-item:hover {
-    border-color: var(--gold);
-    background: #1e1508;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(201,168,76,0.15);
-  }
-  .shop-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 8px rgba(201,168,76,0.4));
-  }
-  .shop-info { flex:1; }
-  .shop-name {
-    font-size: 1rem;
-    color: var(--gold-light);
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-  }
-  .shop-price {
-    font-size: 0.85rem;
-    color: var(--text-dim);
-  }
-  .price-tag {
-    display: inline-block;
-    background: linear-gradient(135deg, rgba(139,0,0,0.3), rgba(201,168,76,0.15));
-    border: 1px solid rgba(201,168,76,0.3);
-    padding: 2px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    color: var(--gold);
-    margin-top: 0.4rem;
-  }
-  .price-tag.diamond {
-    background: linear-gradient(135deg, rgba(0,50,100,0.3), rgba(0,180,220,0.1));
-    border-color: rgba(0,180,220,0.4);
-    color: #7de8ff;
-  }
-  .shop-header-banner {
-    text-align: center;
-    background: linear-gradient(135deg, rgba(139,0,0,0.2), rgba(201,168,76,0.08), rgba(139,0,0,0.2));
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    padding: 2rem;
-    margin-bottom: 3rem;
-  }
-  .shop-header-banner h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    color: var(--gold);
-    text-shadow: 0 0 20px rgba(201,168,76,0.5);
-  }
+.section-subtitle {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-top: 12px;
+  letter-spacing: 2px;
+}
 
-  /* ─── SECTION 2: LANDS ─── */
-  #lands { }
-  .lands-table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border-gold);
-    border-radius: 8px;
-  }
-  .lands-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .lands-table thead tr {
-    background: linear-gradient(90deg, rgba(139,0,0,0.4), rgba(201,168,76,0.15), rgba(139,0,0,0.4));
-  }
-  .lands-table th {
-    padding: 1.2rem 1.5rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    color: var(--gold);
-    text-align: right;
-    border-bottom: 1px solid var(--border-gold);
-    white-space: nowrap;
-  }
-  .lands-table td {
-    padding: 1.1rem 1.5rem;
-    font-size: 0.92rem;
-    color: var(--text-main);
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    text-align: right;
-  }
-  .lands-table tbody tr {
-    background: var(--bg-card);
-    transition: background 0.2s;
-  }
-  .lands-table tbody tr:hover { background: #1c1408; }
-  .lands-table tbody tr:last-child td { border-bottom: none; }
-  .status-badge {
-    display: inline-block;
-    padding: 3px 12px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 700;
-  }
-  .status-active { background: rgba(26,122,74,0.25); border:1px solid rgba(39,174,96,0.4); color: #5dd98e; }
-  .status-pending { background: rgba(201,168,76,0.15); border:1px solid rgba(201,168,76,0.4); color: var(--gold); }
-  .status-empty { background: rgba(100,100,100,0.15); border:1px solid rgba(150,150,150,0.3); color: #888; }
-  .username-tag {
-    font-family: 'Courier New', monospace;
-    font-size: 0.82rem;
-    background: rgba(201,168,76,0.08);
-    border: 1px solid rgba(201,168,76,0.25);
-    padding: 2px 8px;
-    border-radius: 3px;
-    color: var(--gold-light);
-    white-space: nowrap;
-  }
+/* ─── HERO ─── */
+#hero {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 100%;
+  flex-direction: column;
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 100% 60% at 50% 100%, rgba(10,10,30,0.9) 0%, transparent 70%);
+}
 
-  /* ─── RANKS SECTION ─── */
-  .ranks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-  .rank-card {
-    background: var(--bg-card);
-    border-radius: 8px;
-    padding: 2.5rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.35s;
-  }
-  .rank-card::before {
-    content:'';
-    position:absolute; inset:0;
-    background: radial-gradient(ellipse at 50% 0%, var(--rank-glow,rgba(201,168,76,0.1)) 0%, transparent 65%);
-    pointer-events:none;
-  }
-  .rank-card:hover { transform: translateY(-6px); box-shadow: 0 16px 50px var(--rank-glow,rgba(201,168,76,0.18)); }
-  .rank-king { --rank-glow: rgba(201,168,76,0.18); border: 2px solid var(--gold); }
-  .rank-hand { --rank-glow: rgba(180,30,30,0.2); border: 2px solid rgba(180,30,30,0.7); }
-  .rank-judge { --rank-glow: rgba(70,130,180,0.2); border: 2px solid rgba(70,130,180,0.6); }
-  .rank-badge {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 0 12px var(--rank-glow,rgba(201,168,76,0.5)));
-    animation: seal-pulse 3s ease-in-out infinite alternate;
-  }
-  .rank-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 4px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .rank-name {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.4rem;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 20px rgba(201,168,76,0.4);
-  }
-  .rank-king .rank-name { color: var(--gold); }
-  .rank-hand .rank-name { color: #e05555; text-shadow: 0 0 20px rgba(224,85,85,0.4); }
-  .rank-judge .rank-name { color: #6ab4e8; text-shadow: 0 0 20px rgba(106,180,232,0.4); }
-  .rank-role {
-    display: inline-block;
-    margin-top: 0.8rem;
-    padding: 4px 16px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1px;
-  }
-  .rank-king .rank-role { background: rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.4); color:var(--gold); }
-  .rank-hand .rank-role { background: rgba(180,30,30,0.12); border:1px solid rgba(180,30,30,0.5); color:#e05555; }
-  .rank-judge .rank-role { background: rgba(70,130,180,0.12); border:1px solid rgba(70,130,180,0.5); color:#6ab4e8; }
-  .rank-divider {
-    width:40px; height:1px;
-    background: linear-gradient(90deg,transparent,var(--gold),transparent);
-    margin: 1rem auto;
-  }
+.hero-crown {
+  font-size: 72px;
+  animation: floatCrown 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(240,192,64,0.5));
+  margin-bottom: 16px;
+}
 
-  .placeholder-note {
-    background: rgba(201,168,76,0.05);
-    border: 1px dashed rgba(201,168,76,0.3);
-    border-radius: 6px;
-    padding: 1rem 1.5rem;
-    margin-top: 2rem;
-    font-size: 0.85rem;
-    color: var(--text-dim);
-    text-align: center;
-  }
+@keyframes floatCrown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
 
-  /* ─── SECTION 3 & 7: UPGRADE ─── */
-  #upgrade, #fund { }
-  .upgrade-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 3rem;
-    border-bottom: 1px solid var(--border-gold);
-    padding-bottom: 0;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .tab-btn {
-    background: transparent;
-    border: 1px solid var(--border-gold);
-    border-bottom: none;
-    color: var(--text-dim);
-    padding: 10px 24px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    border-radius: 4px 4px 0 0;
-    transition: all 0.3s;
-    position: relative;
-    bottom: -1px;
-  }
-  .tab-btn.active {
-    background: var(--bg-card);
-    color: var(--gold);
-    border-color: var(--gold);
-    border-bottom: 1px solid var(--bg-card);
-  }
-  .tab-btn:hover:not(.active) {
-    color: var(--gold-light);
-    background: rgba(201,168,76,0.05);
-  }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(38px, 8vw, 82px);
+  font-weight: 900;
+  color: transparent;
+  background: linear-gradient(135deg, #f0c040 0%, #c9a84c 40%, #ffe08a 70%, #c9a84c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  letter-spacing: 6px;
+  text-shadow: none;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
 
-  .points-system {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
-    margin-bottom: 3rem;
-  }
-  .point-item {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    padding: 1.2rem;
-    text-align: center;
-    transition: all 0.3s;
-  }
-  .point-item:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(201,168,76,0.15); }
-  .point-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-  .point-name { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.4rem; }
-  .point-val { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold); font-weight: 700; }
+.hero-roman {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: var(--text-dim);
+  letter-spacing: 10px;
+  margin-bottom: 24px;
+}
 
-  .tier-section { margin-bottom: 2.5rem; }
-  .tier-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.2rem;
-    padding: 0.8rem 1.5rem;
-    border-radius: 4px;
-  }
-  .tier-title span { font-family: 'Cinzel', serif; font-size: 1rem; letter-spacing:2px; }
+.hero-tagline {
+  font-size: clamp(14px, 2vw, 18px);
+  color: var(--text);
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  max-width: 600px;
+  line-height: 2;
+}
 
-  .tier-green .tier-title { background: rgba(39,174,96,0.1); border-right: 3px solid #27ae60; }
-  .tier-yellow .tier-title { background: rgba(241,196,15,0.1); border-right: 3px solid #f1c40f; }
-  .tier-orange .tier-title { background: rgba(230,126,34,0.1); border-right: 3px solid #e67e22; }
-  .tier-red .tier-title { background: rgba(231,76,60,0.1); border-right: 3px solid #e74c3c; }
-  .tier-purple .tier-title { background: rgba(155,89,182,0.1); border-right: 3px solid #9b59b6; }
-  .tier-black .tier-title { background: rgba(80,80,80,0.1); border-right: 3px solid #888; }
+.hero-addr-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 14px 24px;
+  font-family: monospace;
+  font-size: 18px;
+  color: var(--gold-light);
+  box-shadow: var(--glow);
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
-  .level-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.8rem;
-  }
-  .level-card {
-    background: var(--bg-card);
-    border: 1px solid rgba(201,168,76,0.15);
-    border-radius: 5px;
-    padding: 1rem;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .level-card:hover {
-    border-color: var(--border-gold);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(201,168,76,0.12);
-  }
-  .level-num {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    margin-bottom: 0.3rem;
-  }
-  .level-emoji { font-size: 1.5rem; margin-bottom: 0.3rem; }
-  .level-blocks {
-    font-size: 0.9rem;
-    color: var(--gold-light);
-    margin-bottom: 0.3rem;
-  }
-  .level-pts {
-    font-family: 'Cinzel', serif;
-    font-size: 0.85rem;
-    color: var(--gold);
-  }
+.addr-text {
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px var(--gold);
+  user-select: all;
+}
 
-  /* Heart system */
-  .heart-timeline { display: flex; flex-direction: column; gap: 0; }
-  .heart-step {
-    display: flex;
-    align-items: stretch;
-    gap: 1.5rem;
-    position: relative;
-  }
-  .heart-step-line {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 40px;
-    flex-shrink: 0;
-  }
-  .heart-dot {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    border: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-    z-index:1;
-  }
-  .heart-connector {
-    width: 2px;
-    flex:1;
-    min-height: 30px;
-    background: linear-gradient(180deg, var(--gold-dark), transparent);
-    margin: 0 auto;
-  }
-  .heart-content {
-    flex:1;
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    padding: 1.2rem 1.5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: all 0.3s;
-  }
-  .heart-content:hover {
-    border-color: var(--gold);
-    background: #1c1408;
-  }
-  .heart-req { font-size: 1rem; color: var(--text-main); }
-  .heart-reward {
-    font-family: 'Cinzel', serif;
-    color: #ff4d6d;
-    font-size: 1rem;
-    font-weight: 700;
-    text-shadow: 0 0 15px rgba(255,77,109,0.5);
-  }
-  .boss-card {
-    background: linear-gradient(135deg, rgba(139,0,0,0.2), rgba(40,0,60,0.3));
-    border: 1px solid rgba(139,0,0,0.5);
-    border-radius: 8px;
-    padding: 2rem;
-    margin-top: 2.5rem;
-    text-align: center;
-  }
-  .boss-title {
-    font-family: 'Cinzel', serif;
-    color: var(--gold);
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
-  }
-  .boss-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
-  .boss-item {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 5px;
-    padding: 1rem;
-    font-size: 1rem;
-    color: var(--text-main);
-  }
-  .boss-reward {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: #ffd700;
-    text-shadow: 0 0 20px rgba(255,215,0,0.5);
-    padding: 1rem;
-    border-top: 1px solid rgba(201,168,76,0.2);
-    margin-top: 1rem;
-  }
-  .quote-box {
-    font-style: italic;
-    color: var(--text-dim);
-    border-right: 3px solid var(--gold-dark);
-    padding-right: 1.5rem;
-    margin-top: 2rem;
-    font-size: 0.95rem;
-    line-height: 1.8;
-  }
+.copy-btn {
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  color: #0a0a14;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: linear-gradient(135deg, var(--gold), var(--gold-pale)); box-shadow: 0 0 14px rgba(240,192,64,0.4); }
+.copy-btn.copied { background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; }
 
-  /* ─── SECTION 4: RULES ─── */
-  #rules { }
-  .rules-tabs {
-    display: flex;
-    gap: 0.8rem;
-    margin-bottom: 2.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .rules-tab-btn {
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    color: var(--text-dim);
-    padding: 12px 28px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    border-radius: 4px;
-    transition: all 0.3s;
-  }
-  .rules-tab-btn.active {
-    background: linear-gradient(135deg, rgba(139,0,0,0.4), rgba(201,168,76,0.1));
-    color: var(--gold);
-    border-color: var(--gold);
-    box-shadow: 0 0 20px rgba(201,168,76,0.15);
-  }
-  .rules-tab-btn:hover:not(.active) {
-    color: var(--gold-light);
-    border-color: rgba(201,168,76,0.5);
-  }
-  .accordion-item {
-    border: 1px solid var(--border-gold);
-    border-radius: 6px;
-    margin-bottom: 0.8rem;
-    overflow: hidden;
-  }
-  .accordion-header {
-    background: var(--bg-card);
-    padding: 1.2rem 1.5rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: background 0.3s;
-    user-select: none;
-  }
-  .accordion-header:hover { background: #1c1408; }
-  .accordion-header.open { background: linear-gradient(90deg, rgba(139,0,0,0.2), var(--bg-card)); }
-  .accordion-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.95rem;
-    color: var(--gold-light);
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-  .accordion-arrow {
-    color: var(--gold);
-    font-size: 0.8rem;
-    transition: transform 0.3s;
-  }
-  .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
-  .accordion-body {
-    display: none;
-    padding: 1.5rem 2rem;
-    background: var(--bg-card2);
-    border-top: 1px solid var(--border-gold);
-    line-height: 2;
-    color: var(--text-main);
-    font-size: 0.9rem;
-  }
-  .accordion-body.open { display: block; animation: slide-down 0.3s ease; }
-  @keyframes slide-down {
-    from { opacity:0; transform: translateY(-8px); }
-    to { opacity:1; transform: translateY(0); }
-  }
-  .law-article {
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-  }
-  .law-article:last-child { border-bottom: none; margin-bottom: 0; }
-  .law-article-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.95rem;
-    color: var(--gold);
-    margin-bottom: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .law-article-body { color: var(--text-main); line-height: 2; }
-  .law-article-body ul {
-    list-style: none;
-    padding-right: 1.5rem;
-    margin-top: 0.5rem;
-  }
-  .law-article-body li {
-    padding: 0.3rem 0;
-    position: relative;
-  }
-  .law-article-body li::before {
-    content: '◆';
-    position: absolute;
-    right: -1.2rem;
-    color: var(--gold-dark);
-    font-size: 0.5rem;
-    top: 0.6rem;
-  }
-  .warning-box {
-    background: rgba(139,0,0,0.15);
-    border: 1px solid rgba(139,0,0,0.4);
-    border-radius: 4px;
-    padding: 0.8rem 1rem;
-    margin: 0.8rem 0;
-    font-size: 0.88rem;
-    color: #ff8080;
-  }
+.hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-dim);
+  font-size: 22px;
+  animation: bounce 2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
 
-  /* ─── SECTION 5: CHANNEL ─── */
-  #channel { }
-  .contact-box {
-    max-width: 500px;
-    margin: 0 auto;
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 8px;
-    padding: 3rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .contact-box::before {
-    content:'';
-    position:absolute; inset:0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .contact-seal {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
-    filter: drop-shadow(0 0 15px rgba(201,168,76,0.5));
-    animation: seal-pulse 3s ease-in-out infinite alternate;
-  }
-  @keyframes seal-pulse {
-    from { filter: drop-shadow(0 0 15px rgba(201,168,76,0.5)); }
-    to { filter: drop-shadow(0 0 30px rgba(201,168,76,0.8)); }
-  }
-  .contact-desc {
-    color: var(--text-dim);
-    margin-bottom: 2rem;
-    line-height: 2;
-  }
-  .contact-handle {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(139,0,0,0.1));
-    border: 1px solid var(--gold);
-    padding: 1rem 2rem;
-    border-radius: 6px;
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    color: var(--gold);
-    cursor: pointer;
-    transition: all 0.3s;
-    user-select: all;
-  }
-  .contact-handle:hover {
-    background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(139,0,0,0.2));
-    box-shadow: 0 0 30px rgba(201,168,76,0.2);
-  }
+/* ─── CARDS ─── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s;
+  position: relative;
+}
+.card:hover {
+  border-color: var(--border-gold);
+  box-shadow: var(--shadow-gold), var(--glow);
+  transform: translateY(-2px);
+}
 
-  /* ─── SECTION 6: SERVER ─── */
-  #server { }
-  .server-box {
-    max-width: 600px;
-    margin: 0 auto;
-    background: var(--bg-card);
-    border: 1px solid var(--border-gold);
-    border-radius: 8px;
-    padding: 3rem 2rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .server-box::before {
-    content:'';
-    position:absolute; inset:0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(139,0,0,0.1) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .server-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 4px;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
-  }
-  .server-address-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--gold);
-    border-radius: 6px;
-    padding: 1.2rem 2rem;
-    margin: 1.5rem 0;
-    flex-wrap: wrap;
-  }
-  .server-address {
-    font-family: 'Courier New', monospace;
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    color: var(--gold);
-    letter-spacing: 2px;
-    text-shadow: 0 0 20px rgba(201,168,76,0.5);
-    user-select: all;
-  }
-  .copy-btn {
-    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-    border: none;
-    color: #0a0806;
-    padding: 8px 18px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 700;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .copy-btn:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(201,168,76,0.3); }
-  .server-online {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #5dd98e;
-    font-size: 0.9rem;
-    margin-top: 1rem;
-  }
-  .online-dot {
-    width: 8px; height: 8px;
-    background: #5dd98e;
-    border-radius: 50%;
-    animation: blink 1.5s ease-in-out infinite;
-    box-shadow: 0 0 8px #5dd98e;
-  }
-  @keyframes blink {
-    0%,100% { opacity:1; }
-    50% { opacity:0.3; }
-  }
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
 
-  /* ─── FOOTER ─── */
-  footer {
-    text-align: center;
-    padding: 3rem 2rem;
-    border-top: 1px solid var(--border-gold);
-    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
-    color: var(--text-dim);
-    font-size: 0.85rem;
-  }
-  footer .footer-logo {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.2rem;
-    color: var(--gold);
-    margin-bottom: 1rem;
-    text-shadow: 0 0 20px rgba(201,168,76,0.4);
-  }
+/* ─── WARNING BANNER ─── */
+.warning-banner {
+  background: rgba(192,57,43,0.12);
+  border: 1px solid rgba(192,57,43,0.4);
+  border-radius: 6px;
+  padding: 14px 20px;
+  color: #e74c3c;
+  margin-bottom: 28px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  line-height: 1.8;
+}
 
-  /* ─── MOBILE MENU ─── */
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 5px;
-  }
-  .hamburger span {
-    display: block;
-    width: 25px; height: 2px;
-    background: var(--gold);
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-  .mobile-menu {
-    display: none;
-    position: fixed;
-    top: 64px; left:0; right:0;
-    background: rgba(8,6,4,0.98);
-    border-bottom: 1px solid var(--border-gold);
-    z-index: 999;
-    padding: 1rem 0;
-    backdrop-filter: blur(12px);
-  }
-  .mobile-menu.open { display: block; }
-  .mobile-menu a {
-    display: block;
-    padding: 12px 2rem;
-    color: var(--text-dim);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(201,168,76,0.08);
-    transition: all 0.2s;
-  }
-  .mobile-menu a:hover { color: var(--gold); background: rgba(201,168,76,0.05); }
+.warning-box {
+  background: rgba(192,57,43,0.1);
+  border: 2px solid rgba(192,57,43,0.5);
+  border-radius: 8px;
+  padding: 16px 22px;
+  color: #e85050;
+  margin-top: 28px;
+  font-weight: 600;
+  line-height: 2;
+}
 
-  @media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-    .shop-grid { grid-template-columns: 1fr; }
-    .level-grid { grid-template-columns: repeat(2, 1fr); }
-    .boss-grid { grid-template-columns: 1fr; }
-    section { padding: 4rem 1rem; }
-    .points-system { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 480px) {
-    .level-grid { grid-template-columns: 1fr; }
-    .points-system { grid-template-columns: repeat(2, 1fr); }
-  }
+.amber-box {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid var(--border-gold);
+  border-radius: 6px;
+  padding: 14px 20px;
+  color: var(--gold-light);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
 
-  /* Reveal animation */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ─── SHOP CARD ─── */
+.shop-card .item-icon { font-size: 28px; margin-bottom: 8px; }
+.shop-card .item-name { font-family: 'Cinzel', serif; font-size: 13px; color: var(--gold); font-weight: 600; letter-spacing: 1px; margin-bottom: 6px; }
+.shop-card .item-price { font-size: 12px; color: var(--text-dim); }
+.shop-card .item-price .diamond { color: #5dade2; }
 
-  /* Sub header styles */
-  .sub-section-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.15rem;
-    color: var(--gold-light);
-    margin: 2.5rem 0 1.5rem;
-    padding: 1rem 1.5rem;
-    background: linear-gradient(90deg, rgba(201,168,76,0.08), transparent);
-    border-right: 3px solid var(--gold);
-    border-radius: 0 4px 4px 0;
-  }
+/* ─── JOB CARDS ─── */
+.job-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.job-card {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 18px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.job-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.job-card:hover { border-color: var(--border-gold); box-shadow: var(--glow); transform: translateY(-3px); }
+.job-card:hover::before { opacity: 1; }
+.job-card .job-icon { font-size: 36px; margin-bottom: 12px; }
+.job-card .job-name { font-family: 'Cinzel', serif; font-size: 15px; color: var(--gold-light); font-weight: 700; margin-bottom: 10px; letter-spacing: 1px; }
+.job-card .job-desc { font-size: 12px; color: var(--text-dim); line-height: 1.8; }
+
+/* ─── TERRITORIES TABLE ─── */
+.territories-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+.territories-table th {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--border-gold);
+  text-align: right;
+  letter-spacing: 1px;
+}
+.territories-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.territories-table tr:hover td { background: rgba(201,168,76,0.04); }
+
+/* ─── PROCLAMATION ─── */
+.parchment {
+  background: linear-gradient(135deg, #1a1522 0%, #0f1020 50%, #1a1522 100%);
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  padding: 36px;
+  position: relative;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.4), var(--shadow-gold);
+}
+.parchment::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.proclamation-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: var(--gold-light);
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.proclamation-subtitle {
+  text-align: center;
+  color: var(--red-light);
+  font-weight: 600;
+  margin-bottom: 24px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.proclamation-body {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 2;
+}
+.proclamation-body p { margin-bottom: 10px; }
+.proclamation-body ol { padding-right: 20px; }
+.proclamation-body li { margin-bottom: 14px; }
+.proclamation-body strong { color: var(--gold); }
+
+/* ─── UPGRADE / HEARTS ─── */
+.hearts-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.heart-milestone {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 20px;
+  transition: all 0.3s;
+}
+.heart-milestone:hover { border-color: var(--border-gold); box-shadow: var(--shadow-gold); }
+.heart-milestone .milestone-badge {
+  font-size: 22px;
+  min-width: 36px;
+  text-align: center;
+}
+.heart-milestone .milestone-info {
+  flex: 1;
+}
+.heart-milestone .milestone-adv {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.heart-milestone .milestone-reward {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.heart-milestone .milestone-hearts {
+  font-size: 18px;
+  color: #e74c3c;
+}
+
+.boss-card {
+  background: linear-gradient(135deg, rgba(142,68,173,0.1), rgba(26,15,34,0.8));
+  border: 1px solid rgba(142,68,173,0.4);
+  border-radius: 10px;
+  padding: 24px;
+  margin-top: 20px;
+  text-align: center;
+}
+.boss-icons { font-size: 28px; letter-spacing: 8px; margin-bottom: 12px; }
+.boss-reward { color: var(--gold-light); font-size: 15px; margin-bottom: 8px; font-weight: 600; }
+.boss-quote {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 13px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(201,168,76,0.15);
+}
+
+/* ─── CLAIM TABLE ─── */
+.claim-table-wrap { overflow-x: auto; }
+.claim-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.claim-table th {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  padding: 12px 14px;
+  border-bottom: 2px solid var(--border-gold);
+  text-align: right;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.claim-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(42,42,74,0.5);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.claim-table tr:hover td { background: rgba(201,168,76,0.04); }
+
+.tier-green td { color: #2ecc71; }
+.tier-yellow td { color: #f1c40f; }
+.tier-orange td { color: #e67e22; }
+.tier-red td { color: #e74c3c; }
+.tier-purple td { color: #9b59b6; }
+.tier-black td { color: #95a5a6; }
+
+.tier-header td {
+  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.3);
+}
+.tier-header.th-green td { color: #27ae60; border-top: 2px solid #27ae60; }
+.tier-header.th-yellow td { color: #f1c40f; border-top: 2px solid #f1c40f; }
+.tier-header.th-orange td { color: #e67e22; border-top: 2px solid #e67e22; }
+.tier-header.th-red td { color: #e74c3c; border-top: 2px solid #e74c3c; }
+.tier-header.th-purple td { color: #9b59b6; border-top: 2px solid #9b59b6; }
+.tier-header.th-black td { color: #95a5a6; border-top: 2px solid #95a5a6; }
+
+/* ─── LAWS ─── */
+.law-accordion {
+  border: 1px solid var(--border-gold);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.law-accordion-header {
+  padding: 18px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(201,168,76,0.04);
+  user-select: none;
+  transition: background 0.2s;
+}
+.law-accordion-header:hover { background: rgba(201,168,76,0.08); }
+.law-accordion-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--gold-light);
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.law-accordion-icon {
+  color: var(--gold);
+  font-size: 18px;
+  transition: transform 0.3s;
+}
+.law-accordion.open .law-accordion-icon { transform: rotate(180deg); }
+.law-accordion-body {
+  display: none;
+  padding: 24px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border-gold);
+}
+.law-accordion.open .law-accordion-body { display: block; }
+
+.principle-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-right: 3px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  transition: all 0.25s;
+}
+.principle-card:hover { border-right-color: var(--gold); box-shadow: var(--shadow-gold); }
+.principle-card h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+.principle-card ul {
+  padding-right: 18px;
+}
+.principle-card li {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.9;
+  margin-bottom: 2px;
+}
+.principle-card p {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.9;
+}
+
+.badge-green {
+  display: inline-block;
+  background: rgba(39,174,96,0.15);
+  border: 1px solid rgba(39,174,96,0.4);
+  color: #2ecc71;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.badge-red {
+  display: inline-block;
+  background: rgba(192,57,43,0.15);
+  border: 1px solid rgba(192,57,43,0.4);
+  color: #e74c3c;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.law-list { list-style: none; padding: 0; margin: 0 0 14px 0; }
+.law-list li { font-size: 13px; color: var(--text-dim); padding: 5px 0; border-bottom: 1px solid var(--border); line-height: 1.8; }
+.law-list li:last-child { border-bottom: none; }
+
+.penalty-card {
+  background: rgba(26,15,34,0.6);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.penalty-card h5 {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.penalty-card ul { padding-right: 18px; }
+.penalty-card li { font-size: 13px; color: var(--text-dim); line-height: 1.9; }
+
+.law-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  color: var(--gold);
+  margin: 22px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-gold);
+  letter-spacing: 1px;
+}
+
+.final-clause {
+  background: rgba(192,57,43,0.08);
+  border: 1px solid rgba(192,57,43,0.3);
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin-top: 20px;
+}
+.final-clause li {
+  font-size: 13px;
+  color: #e07070;
+  line-height: 1.9;
+  margin-bottom: 6px;
+}
+
+/* ─── CHANNEL CARD ─── */
+.channel-card {
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.channel-id {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 26px;
+  color: var(--gold-light);
+  background: rgba(201,168,76,0.06);
+  border: 2px solid var(--border-gold);
+  border-radius: 8px;
+  padding: 14px 40px;
+  margin: 20px 0;
+  text-decoration: none;
+  letter-spacing: 3px;
+  transition: all 0.3s;
+  box-shadow: var(--shadow-gold);
+  text-shadow: 0 0 12px var(--gold);
+}
+.channel-id:hover { box-shadow: var(--glow); transform: scale(1.02); }
+
+/* ─── INVESTMENT TABLE ─── */
+.invest-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 28px;
+}
+.invest-table th {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  padding: 14px 18px;
+  border-bottom: 2px solid var(--border-gold);
+  text-align: right;
+  letter-spacing: 1px;
+}
+.invest-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+}
+.invest-table tr:hover td { background: rgba(201,168,76,0.04); }
+.invest-table .pts { color: var(--gold-light); font-weight: 600; }
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border-gold);
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  background: linear-gradient(0deg, rgba(201,168,76,0.03) 0%, transparent 100%);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  .job-cards { grid-template-columns: 1fr 1fr; }
+  .parchment { padding: 22px 16px; }
+  .hero-title { letter-spacing: 3px; }
+  .section-title::before, .section-title::after { display: none; }
+}
+@media (max-width: 480px) {
+  .job-cards { grid-template-columns: 1fr; }
+  .card-grid { grid-template-columns: 1fr 1fr; }
+  .hero-addr-wrap { flex-direction: column; }
+}
+
+/* ─── SEPARATOR LINE ─── */
+.sep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gold-dim);
+  margin: 60px 0 0;
+  font-size: 14px;
+  letter-spacing: 4px;
+}
+.sep::before, .sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+}
+
+/* scroll-margin for anchor links */
+section[id] { scroll-margin-top: 70px; }
 </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
+<!-- Particle Canvas -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- NAV -->
 <nav>
-  <div class="nav-brand">⚜ SCHOOL SMP IV ⚜</div>
+  <div class="nav-brand">⚜ SCHOOL SMP V ⚜</div>
   <ul class="nav-links">
-    <li><a href="#hero">خانه</a></li>
+    <li><a href="#intro">معرفی</a></li>
     <li><a href="#shop">فروشگاه</a></li>
-    <li><a href="#lands">سرزمین‌ها</a></li>
+    <li><a href="#jobs">مشاغل</a></li>
+    <li><a href="#territories">سرزمین‌ها</a></li>
+    <li><a href="#decrees">بیانیه‌ها</a></li>
     <li><a href="#upgrade">ارتقا</a></li>
-    <li><a href="#rules">قوانین</a></li>
+    <li><a href="#laws">قوانین</a></li>
     <li><a href="#channel">کانال</a></li>
-    <li><a href="#server">سرور</a></li>
-    <li><a href="#fund">صندوق</a></li>
-    <li><a href="#ranks">مقام‌ها</a></li>
+    <li><a href="#investment">صندوق</a></li>
   </ul>
-  <button class="hamburger" id="hamburger" aria-label="Menu">
+  <div class="hamburger" id="hamburger">
     <span></span><span></span><span></span>
-  </button>
+  </div>
 </nav>
+
+<!-- Mobile Menu -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#hero" onclick="closeMobileMenu()">خانه</a>
-  <a href="#shop" onclick="closeMobileMenu()">فروشگاه</a>
-  <a href="#lands" onclick="closeMobileMenu()">سرزمین‌ها</a>
-  <a href="#upgrade" onclick="closeMobileMenu()">ارتقا</a>
-  <a href="#rules" onclick="closeMobileMenu()">قوانین</a>
-  <a href="#channel" onclick="closeMobileMenu()">کانال</a>
-  <a href="#server" onclick="closeMobileMenu()">آدرس سرور</a>
-  <a href="#fund" onclick="closeMobileMenu()">صندوق سرمایه</a>
-  <a href="#ranks" onclick="closeMobileMenu()">مقام‌ها</a>
+  <a href="#intro" onclick="closeMobile()">🏰 معرفی سرور</a>
+  <a href="#shop" onclick="closeMobile()">💎 فروشگاه</a>
+  <a href="#jobs" onclick="closeMobile()">👨‍💼 مشاغل</a>
+  <a href="#territories" onclick="closeMobile()">🗺️ سرزمین‌ها</a>
+  <a href="#decrees" onclick="closeMobile()">📜 بیانیه‌ها</a>
+  <a href="#upgrade" onclick="closeMobile()">⬆️ ارتقا</a>
+  <a href="#laws" onclick="closeMobile()">⚖️ قوانین</a>
+  <a href="#channel" onclick="closeMobile()">📣 کانال</a>
+  <a href="#investment" onclick="closeMobile()">💰 صندوق</a>
 </div>
 
-<!-- HERO -->
-<div id="hero">
-  <div class="hero-bg"></div>
-  <div class="particles" id="particles"></div>
-  <div class="hero-content">
-    <img src="/mnt/user-data/uploads/photo_2026-05-10_07-44-37.jpg" alt="School SMP IV Flag" class="hero-flag" onerror="this.style.display='none'">
-    <div class="hero-subtitle-top">⚔ &nbsp; پادشاهی مدرسه &nbsp; ⚔</div>
-    <h1 class="hero-title">School SMP IV</h1>
-    <div class="hero-divider">
-      <div class="hero-divider-line"></div>
-      <span>👑</span>
-      <div class="hero-divider-line"></div>
-    </div>
-    <p class="hero-desc">
-      به پادشاهی سرور چهارم خوش آمدید.<br>
-      اینجا قلمرو‌ها ساخته می‌شوند، تجارت شکوفا می‌شود،<br>
-      و شمشیرها تنها با رضایت کشیده خواهند شد.
+<main>
+
+<!-- ─── HERO ─── -->
+<section id="hero" class="visible" style="opacity:1;transform:none;">
+  <div class="hero-crown">👑</div>
+  <h1 class="hero-title">School SMP</h1>
+  <div class="hero-roman">V — THE FIFTH KINGDOM</div>
+  <p class="hero-tagline">به قلمرو پادشاهی خوش آمدید — جایی که قانون، شمشیر و افسانه یکی می‌شوند</p>
+  <div class="hero-addr-wrap">
+    <span class="addr-text" id="serverAddr">host2.hgmc.ir:24517</span>
+    <button class="copy-btn" id="copyBtn" onclick="copyAddr()">📋 کپی</button>
+  </div>
+  <div class="hero-scroll">⌄</div>
+</section>
+
+<!-- ─── SECTION 1: INTRO ─── -->
+<section id="intro">
+  <div class="section-header">
+    <div class="section-title">🏰 معرفی و آدرس سرور</div>
+    <div class="section-subtitle">Royal Welcome — خوش آمدید</div>
+  </div>
+  <div class="parchment">
+    <p class="proclamation-title">به پادشاهی School SMP V خوش آمدید</p>
+    <br>
+    <p style="color:var(--text);font-size:15px;line-height:2;text-align:center;margin-bottom:28px;">
+      این سرور بر پایه آزادی، رقابت و نظم سلطنتی بنا شده است. هر بازیکن می‌تواند
+      سرزمین خود را بسازد، حکومت تشکیل دهد و در پادشاهی بزرگ نقش‌آفرینی کند.
     </p>
-    <a href="#shop" class="hero-cta">⚜ وارد پادشاهی شو ⚜</a>
-  </div>
-</div>
-
-<div class="sep"></div>
-
-<!-- SECTION 1: SHOP -->
-<section id="shop">
-  <div class="section-header reveal">
-    <span class="section-label">royal marketplace</span>
-    <h2 class="section-title">⚔️ Shop ⚔️</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>💎</span><div class="ornament-line"></div>
-    </div>
-  </div>
-
-  <div class="shop-header-banner reveal">
-    <h3>💎✨ Enchants for Hand of the King ✨💎</h3>
-  </div>
-
-  <div class="shop-grid">
-    <div class="shop-item reveal">
-      <div class="shop-icon">⚔️</div>
-      <div class="shop-info">
-        <div class="shop-name">Sharpness VI</div>
-        <div class="shop-price">تیزی شمشیر — سطح شش</div>
-        <span class="price-tag">۲ استک</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">⛏️</div>
-      <div class="shop-info">
-        <div class="shop-name">Efficiency VI</div>
-        <div class="shop-price">کارایی — سطح شش</div>
-        <span class="price-tag">۲ استک</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">🏹</div>
-      <div class="shop-info">
-        <div class="shop-name">Power VI</div>
-        <div class="shop-price">قدرت تیر — سطح شش</div>
-        <span class="price-tag">۱ استک + ۴۰</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">🛡️</div>
-      <div class="shop-info">
-        <div class="shop-name">Protection V</div>
-        <div class="shop-price">محافظت — سطح پنج</div>
-        <span class="price-tag">۱ استک + ۳۲</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">🔧</div>
-      <div class="shop-info">
-        <div class="shop-name">Unbreaking IV</div>
-        <div class="shop-price">ناشکستنی — سطح چهار</div>
-        <span class="price-tag">۱ استک</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">♻️</div>
-      <div class="shop-info">
-        <div class="shop-name">Mending II</div>
-        <div class="shop-price">ترمیم — سطح دو</div>
-        <span class="price-tag">۰.۵ استک</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">💰</div>
-      <div class="shop-info">
-        <div class="shop-name">Fortune IV</div>
-        <div class="shop-price">شانس — سطح چهار</div>
-        <span class="price-tag">۳ استک + ۱ الماس</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">🌪️</div>
-      <div class="shop-info">
-        <div class="shop-name">Wind Burst IV</div>
-        <div class="shop-price">طوفان باد — سطح چهار</div>
-        <span class="price-tag">۱۲ استک</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">⚡</div>
-      <div class="shop-info">
-        <div class="shop-name">Efficiency X</div>
-        <div class="shop-price">کارایی نهایی — سطح ده</div>
-        <span class="price-tag diamond">۲۰ استک (الماس)</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">🏹</div>
-      <div class="shop-info">
-        <div class="shop-name">Infinity + Mending</div>
-        <div class="shop-price">بی‌نهایت + ترمیم</div>
-        <span class="price-tag diamond">۲ استک (الماس)</span>
-      </div>
-    </div>
-    <div class="shop-item reveal">
-      <div class="shop-icon">💥</div>
-      <div class="shop-info">
-        <div class="shop-name">Breach V</div>
-        <div class="shop-price">نفوذ — سطح پنج</div>
-        <span class="price-tag diamond">۱.۵ استک (الماس)</span>
+    <div style="text-align:center;">
+      <div style="display:inline-block;background:rgba(201,168,76,0.06);border:1px solid var(--border-gold);border-radius:8px;padding:18px 32px;box-shadow:var(--glow);">
+        <div style="font-size:12px;color:var(--text-dim);letter-spacing:2px;margin-bottom:8px;">آدرس سرور</div>
+        <div style="font-family:monospace;font-size:20px;color:var(--gold-light);text-shadow:0 0 10px var(--gold);letter-spacing:1px;margin-bottom:12px;" id="addrBlock">host2.hgmc.ir:24517</div>
+        <button class="copy-btn" id="copyBtn2" onclick="copyAddr2()">📋 کپی</button>
       </div>
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
-
-<!-- SECTION 2: LANDS -->
-<section id="lands">
-  <div class="section-header reveal">
-    <span class="section-label">territories & kingdoms</span>
-    <h2 class="section-title">🗺️ سرزمین‌های حال حاضر</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>🏰</span><div class="ornament-line"></div>
-    </div>
-    <p style="color:var(--text-dim); font-size:0.9rem; margin-top:1rem;">نقشه قلمروهای ثبت‌شده پادشاهی</p>
+<!-- ─── SECTION 2: SHOP ─── -->
+<section id="shop">
+  <div class="section-header">
+    <div class="section-title">💎 فروشگاه سلطنتی</div>
+    <div class="section-subtitle">Royal Shop — تجارت با سلطنت</div>
   </div>
+  <div class="warning-banner">
+    ⚠️ این بخش هنوز فعال نیست و قطعی نشده که پس از چند هفته اضافه شود یا خیر.
+  </div>
+  <div class="card-grid">
+    <div class="card shop-card"><div class="item-icon">⚔️</div><div class="item-name">Sharpness VI</div><div class="item-price">2 stacks</div></div>
+    <div class="card shop-card"><div class="item-icon">⛏️</div><div class="item-name">Efficiency VI</div><div class="item-price">2 stacks</div></div>
+    <div class="card shop-card"><div class="item-icon">🏹</div><div class="item-name">Power VI</div><div class="item-price">1 stack + 40</div></div>
+    <div class="card shop-card"><div class="item-icon">🛡️</div><div class="item-name">Protection V</div><div class="item-price">1 stack + 32</div></div>
+    <div class="card shop-card"><div class="item-icon">🔧</div><div class="item-name">Unbreaking IV</div><div class="item-price">1 stack</div></div>
+    <div class="card shop-card"><div class="item-icon">♻️</div><div class="item-name">Mending II</div><div class="item-price">0.5 stack</div></div>
+    <div class="card shop-card"><div class="item-icon">💰</div><div class="item-name">Fortune IV</div><div class="item-price">3 stacks + <span class="diamond">1 💎</span></div></div>
+    <div class="card shop-card"><div class="item-icon">🌪️</div><div class="item-name">Wind Burst IV</div><div class="item-price">12 stacks</div></div>
+    <div class="card shop-card"><div class="item-icon">⚡</div><div class="item-name">Efficiency X</div><div class="item-price">20 stacks <span class="diamond">(💎)</span></div></div>
+    <div class="card shop-card"><div class="item-icon">🏹</div><div class="item-name">Infinity + Mending</div><div class="item-price">2 stacks <span class="diamond">(💎)</span></div></div>
+    <div class="card shop-card"><div class="item-icon">💥</div><div class="item-name">Breach V</div><div class="item-price">1.5 stacks <span class="diamond">(💎)</span></div></div>
+  </div>
+</section>
 
-  <div class="lands-table-wrap reveal">
-    <table class="lands-table">
+<!-- ─── SECTION 3: JOBS ─── -->
+<section id="jobs">
+  <div class="section-header">
+    <div class="section-title">👨‍💼 سیستم شغل‌ها</div>
+    <div class="section-subtitle">Job System — انتخاب مسیر شما</div>
+  </div>
+  <div class="amber-box">
+    <ul style="list-style:none;padding:0;font-size:13px;line-height:2.2;">
+      <li>⚜️ هر پلیر باید از اول سرور یک شغل را برای ادامه کار خود انتخاب کند.</li>
+      <li>⚜️ انتخاب شغل بسیار مهم است چون در آینده شما تاثیر مستقیم می‌گذارد.</li>
+      <li>⚜️ هر شغل به شما یک توانایی ویژه می‌دهد.</li>
+      <li>⚜️ ویدیوی آموزشی جهت انتخاب شغل ارسال خواهد شد.</li>
+    </ul>
+  </div>
+  <div class="job-cards">
+    <div class="job-card">
+      <div class="job-icon">⚔️</div>
+      <div class="job-name">Warrior</div>
+      <div class="job-desc">جنگجویان سرزمین که در میدان نبرد قدرت بیشتری دارند و آسیب بیشتری وارد می‌کنند.</div>
+    </div>
+    <div class="job-card">
+      <div class="job-icon">🤺</div>
+      <div class="job-name">Knight</div>
+      <div class="job-desc">شوالیه‌های سرزمین که استقامت بیشتری دارند و دمیج کمتری می‌خورند.</div>
+    </div>
+    <div class="job-card">
+      <div class="job-icon">💰</div>
+      <div class="job-name">Merchant</div>
+      <div class="job-desc">تاجران و بازرگانانی که در معاملات با Villagerها تخفیف و شرایط بهتری دریافت می‌کنند.</div>
+    </div>
+    <div class="job-card">
+      <div class="job-icon">⛏️</div>
+      <div class="job-name">Miner</div>
+      <div class="job-desc">معدنچیان حرفه‌ای که توانایی استخراج و ماین سریع‌تر منابع و شکستن سریع‌تر بلاک‌ها را دارند.</div>
+    </div>
+    <div class="job-card">
+      <div class="job-icon">🤿</div>
+      <div class="job-name">Diver</div>
+      <div class="job-desc">غواصان حرفه‌ای با قابلیت کندن سریع زیر آب، دید بهتر، شنا سریع‌تر و نفس بی‌نهایت.</div>
+    </div>
+  </div>
+  <div class="warning-box">
+    ⚠️ <strong>توجه بسیار مهم:</strong> هر بازیکن فقط یک بار و در آغاز بازی می‌تواند شغل خود را انتخاب کند. پس از انتخاب، تغییر شغل امکان‌پذیر نخواهد بود. تصمیم شما دائمی است. هیچ استثنا، ریست، یا تغییر ویژه‌ای وجود نخواهد داشت.
+  </div>
+</section>
+
+<!-- ─── SECTION 4: TERRITORIES ─── -->
+<section id="territories">
+  <div class="section-header">
+    <div class="section-title">🗺️ سرزمین‌های حال حاضر</div>
+    <div class="section-subtitle">Active Territories — نقشه قدرت</div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <table class="territories-table">
       <thead>
         <tr>
-          <th>#</th>
-          <th>👤 نام بازیکن</th>
-          <th>🎮 یوزرنیم</th>
-          <th>🏰 نام سرزمین</th>
+          <th>نام سرزمین</th>
+          <th>مالک</th>
         </tr>
       </thead>
       <tbody>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱</td><td>رحمان</td><td><span class="username-tag">Parsa_King</span></td><td>KingdomOfIronThrone</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۲</td><td>آرین</td><td><span class="username-tag">Aripax</span></td><td>RepublicOfWinterfell</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۳</td><td>کیاوش</td><td><span class="username-tag">yourfavDicaprio</span></td><td>KingdomOfTitanic</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۴</td><td>احمدی</td><td><span class="username-tag">koskesh</span></td><td>FascistRepublicOfIran</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۵</td><td>حامد</td><td><span class="username-tag">Hamed_Carlos1</span></td><td>BigBlackDick</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۶</td><td>پورطالب</td><td><span class="username-tag">amirali44p</span></td><td>BigBlackDick</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۷</td><td>ممد</td><td><span class="username-tag">Mamad</span></td><td>KingdomOfDragonStone</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۸</td><td>چرخاب</td><td><span class="username-tag">oldking</span></td><td>RepublicOfFalconNest</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۹</td><td>اقاجری</td><td><span class="username-tag">DonaldJerryTrump</span></td><td>دولت جری</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۰</td><td>پرهام</td><td><span class="username-tag">Parhambn</span></td><td>KillerWhaleKingdom</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۱</td><td>احمدی نیا</td><td><span class="username-tag">Alireza</span></td><td>RepublicOfALIZ</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۲</td><td>امینی</td><td><span class="username-tag">PEZESHKIAN</span></td><td>KingdomOfI.C.O.S</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۳</td><td>بهزادی</td><td><span class="username-tag">Dr_Behzadi</span></td><td>KingdomOfSilentDeceivers</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۴</td><td>زیلایی</td><td><span class="username-tag">Az308</span></td><td>KingdomOfAryaLand</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۵</td><td>ملکشاهی</td><td><span class="username-tag">ARSENALFAN</span></td><td>KingdomOfGunnerSons</td></tr>
-        <tr><td style="color:var(--text-dim);font-family:'Cinzel',serif;">۱۶</td><td>چراغی</td><td><span class="username-tag">King_Cheragh</span></td><td>KingdomOfCheragh</td></tr>
+        <tr><td>(در انتظار ثبت...)</td><td>(در انتظار ثبت...)</td></tr>
+        <tr><td>(در انتظار ثبت...)</td><td>(در انتظار ثبت...)</td></tr>
+        <tr><td>(در انتظار ثبت...)</td><td>(در انتظار ثبت...)</td></tr>
+        <tr><td>(در انتظار ثبت...)</td><td>(در انتظار ثبت...)</td></tr>
+        <tr><td>(در انتظار ثبت...)</td><td>(در انتظار ثبت...)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="amber-box" style="margin-top:16px;margin-bottom:0;text-align:center;font-size:13px;">
+    اطلاعات این بخش به‌زودی تکمیل می‌شود.
+  </div>
+</section>
+
+<!-- ─── SECTION 5: DECREES ─── -->
+<section id="decrees">
+  <div class="section-header">
+    <div class="section-title">📜 بیانیه‌ها و تصویبیه‌های جدید</div>
+    <div class="section-subtitle">Official Decrees — احکام رسمی سرور</div>
+  </div>
+  <div class="parchment">
+    <div class="proclamation-title">👑 بیانیه رسمی مشترک کینگ و رویال جاج ⚖️</div>
+    <div class="proclamation-subtitle">❗️ تغییرات اساسی اعمال شده بر سرور ❗️</div>
+    <div class="proclamation-body">
+      <p><strong>📗 پیش‌بند:</strong><br>
+      قاضی سلطنتی، پس از توافق‌ها و تغییرات اساسی زیر (انجام گرفته پس از ساعت‌ها جلسه) به بازی بر می‌گردد.</p>
+      <p><strong>📥 توافق‌ها و تغییرات:</strong></p>
+      <ol>
+        <li>
+          با توافق حاصله بین طرفین، <strong>بازی روز پس‌فردای آخرین امتحان نوبت دوم آغاز خواهد شد ✅</strong><br>
+          <span style="color:var(--text-dim);font-size:13px;">پ.ن: اهمیتی ندارد آن روز خرداد باشد یا تیر و مرداد 🚫</span>
+        </li>
+        <li>
+          <strong>❗️ سیستم گروه‌بندی جدید ❗️</strong><br>
+          افراد کم‌فعالیت از افراد اصلی و پرفعالیت بازی جدا خواهند شد. یعنی اگر ۱۵ پلیر در بازی است و ۸ فرد فعال شناخته می‌شوند، آن ۸ نفر در گروه‌های ۲ یا ۴ نفره تقسیم می‌شوند اما آن ۷ نفر گروه‌بندی خاصی ندارند و آزاد هستند. می‌توانند بین خود گروه‌بندی کنند. افراد قوی‌تر تحت هیچ شرایطی اجازه سرشاخ شدن با آن‌ها را ندارند.<br>
+          <span style="color:var(--text-dim);font-size:13px;">پ.ن: قوانین قضایی و کیفری در رابطه با این بند بروزرسانی خواهند شد ✅</span>
+        </li>
+        <li>
+          هرگونه — تاکید می‌شود <strong>هرگونه</strong> — دارایی خارج از Chunk مانند خانه‌ها، چست‌ها و غیره در بازی مانند درخت و کوه دیفالت در نظر گرفته خواهد شد و هر احد و واحدی می‌تواند بدون هیچ پیگرد قانونی آن‌ها را تخریب/غارت کند.<br>
+          مجازات کسی که بخواهد سد راه او شود، مجازات آزار در زمین‌های عمومی خواهد بود.
+        </li>
+      </ol>
+      <p style="margin-top:16px;color:var(--text-dim);font-size:13px;font-style:italic;">این تفاهم‌نامه صددرصد ادیت خواهد خورد و آپدیت خواهد شد ✅</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 6: UPGRADE ─── -->
+<section id="upgrade">
+  <div class="section-header">
+    <div class="section-title">⬆️ Upgrade — ارتقا</div>
+    <div class="section-subtitle">Power Systems — مسیر قدرت</div>
+  </div>
+
+  <!-- Hearts -->
+  <div style="margin-bottom:48px;">
+    <h3 style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:20px;letter-spacing:2px;">❤️ ارتقای قلب‌ها</h3>
+    <div class="hearts-timeline">
+      <div class="heart-milestone"><div class="milestone-badge">🥉</div><div class="milestone-info"><div class="milestone-adv">20 Advancement</div><div class="milestone-reward">رسیدن به ۲۰ advancement</div></div><div class="milestone-hearts">+1 ❤️</div></div>
+      <div class="heart-milestone"><div class="milestone-badge">🥈</div><div class="milestone-info"><div class="milestone-adv">45 Advancement</div><div class="milestone-reward">رسیدن به ۴۵ advancement</div></div><div class="milestone-hearts">+1 ❤️</div></div>
+      <div class="heart-milestone"><div class="milestone-badge">🥇</div><div class="milestone-info"><div class="milestone-adv">70 Advancement</div><div class="milestone-reward">رسیدن به ۷۰ advancement</div></div><div class="milestone-hearts">+1 ❤️</div></div>
+      <div class="heart-milestone"><div class="milestone-badge">👑</div><div class="milestone-info"><div class="milestone-adv">100 Advancement</div><div class="milestone-reward">رسیدن به ۱۰۰ advancement</div></div><div class="milestone-hearts">+1 ❤️</div></div>
+      <div class="heart-milestone"><div class="milestone-badge">🔥</div><div class="milestone-info"><div class="milestone-adv">130 Advancement</div><div class="milestone-reward">رسیدن به ۱۳۰ advancement</div></div><div class="milestone-hearts">+1 ❤️</div></div>
+    </div>
+    <div class="boss-card">
+      <div class="boss-icons">💀 🐉 🌊 🧿</div>
+      <div style="font-family:'Cinzel',serif;font-size:13px;color:var(--gold-dim);letter-spacing:2px;margin-bottom:8px;">⚔️ پاداش ویژه افسانه‌ای</div>
+      <div class="boss-reward">هر بازیکنی که تمامی باس‌های اصلی را شکست دهد — ✨ نیم قلب اضافه دریافت خواهد کرد</div>
+      <div style="font-size:12px;color:var(--text-dim);margin-bottom:6px;">Wither · Ender Dragon · Elder Guardian · Warden</div>
+      <div class="boss-quote">«قدرت، پاداش کسانی‌ست که خود را ثابت می‌کنند.»</div>
+    </div>
+  </div>
+
+  <!-- Claim Upgrade Table -->
+  <h3 style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:20px;letter-spacing:2px;">🗺️ سیستم ارتقای سرزمین — Claim Upgrade</h3>
+  <div class="card claim-table-wrap" style="padding:0;overflow:auto;">
+    <table class="claim-table">
+      <thead>
+        <tr><th>سطح</th><th>نشان</th><th>بلاک</th><th>امتیاز</th></tr>
+      </thead>
+      <tbody>
+        <tr class="tier-header th-green"><td colspan="4">🟢 سطوح مبتدی</td></tr>
+        <tr class="tier-green"><td>Level 1</td><td>🌱</td><td>6 blocks</td><td>100 pts</td></tr>
+        <tr class="tier-green"><td>Level 2</td><td>🌿</td><td>7 blocks</td><td>110 pts</td></tr>
+        <tr class="tier-green"><td>Level 3</td><td>🌳</td><td>8 blocks</td><td>130 pts</td></tr>
+        <tr class="tier-green"><td>Level 4</td><td>🪵</td><td>9 blocks</td><td>160 pts</td></tr>
+        <tr class="tier-green"><td>Level 5</td><td>🏡</td><td>10 blocks</td><td>200 pts</td></tr>
+        <tr class="tier-header th-yellow"><td colspan="4">🟡 سطوح میانی</td></tr>
+        <tr class="tier-yellow"><td>Level 6</td><td>🏘</td><td>11 blocks</td><td>240 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 7</td><td>🏙</td><td>12 blocks</td><td>290 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 8</td><td>🏯</td><td>13 blocks</td><td>340 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 9</td><td>🏰</td><td>14 blocks</td><td>400 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 10</td><td>⚜️</td><td>15 blocks</td><td>470 pts</td></tr>
+        <tr class="tier-header th-orange"><td colspan="4">🟠 سطوح پیشرفته</td></tr>
+        <tr class="tier-orange"><td>Level 11</td><td>🛡</td><td>16 blocks</td><td>550 pts</td></tr>
+        <tr class="tier-orange"><td>Level 12</td><td>⚔️</td><td>17 blocks</td><td>640 pts</td></tr>
+        <tr class="tier-orange"><td>Level 13</td><td>🏹</td><td>18 blocks</td><td>740 pts</td></tr>
+        <tr class="tier-orange"><td>Level 14</td><td>🪖</td><td>19 blocks</td><td>850 pts</td></tr>
+        <tr class="tier-orange"><td>Level 15</td><td>👑</td><td>20 blocks</td><td>970 pts</td></tr>
+        <tr class="tier-header th-red"><td colspan="4">🔴 سطوح ارشد</td></tr>
+        <tr class="tier-red"><td>Level 16</td><td>🔥</td><td>21 blocks</td><td>1100 pts</td></tr>
+        <tr class="tier-red"><td>Level 17</td><td>⚡️</td><td>22 blocks</td><td>1240 pts</td></tr>
+        <tr class="tier-red"><td>Level 18</td><td>🌪</td><td>23 blocks</td><td>1390 pts</td></tr>
+        <tr class="tier-red"><td>Level 19</td><td>🩸</td><td>24 blocks</td><td>1550 pts</td></tr>
+        <tr class="tier-red"><td>Level 20</td><td>🗡</td><td>25 blocks</td><td>1720 pts</td></tr>
+        <tr class="tier-header th-purple"><td colspan="4">🟣 سطوح نخبه</td></tr>
+        <tr class="tier-purple"><td>Level 21</td><td>☠️</td><td>26 blocks</td><td>1900 pts</td></tr>
+        <tr class="tier-purple"><td>Level 22</td><td>🏛</td><td>27 blocks</td><td>2090 pts</td></tr>
+        <tr class="tier-purple"><td>Level 23</td><td>🌌</td><td>28 blocks</td><td>2290 pts</td></tr>
+        <tr class="tier-purple"><td>Level 24</td><td>💎</td><td>29 blocks</td><td>2500 pts</td></tr>
+        <tr class="tier-purple"><td>Level 25</td><td>👑</td><td>30 blocks</td><td>2720 pts</td></tr>
+        <tr class="tier-header th-black"><td colspan="4">⚫️ سطوح اسطوره‌ای</td></tr>
+        <tr class="tier-black"><td>Level 26</td><td>🖤</td><td>31 blocks</td><td>2950 pts</td></tr>
+        <tr class="tier-black"><td>Level 27</td><td>⚙️</td><td>32 blocks</td><td>3190 pts</td></tr>
+        <tr class="tier-black"><td>Level 28</td><td>🧱</td><td>33 blocks</td><td>3440 pts</td></tr>
+        <tr class="tier-black"><td>Level 29</td><td>🌑</td><td>34 blocks</td><td>3700 pts</td></tr>
+        <tr class="tier-black"><td>Level 30</td><td>🌟</td><td>35 blocks</td><td>3970 pts</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<div class="sep"></div>
+<!-- ─── SECTION 7: LAWS ─── -->
+<section id="laws">
+  <div class="section-header">
+    <div class="section-title">⚖️ قوانین سرور</div>
+    <div class="section-subtitle">Royal Law — نظم پادشاهی</div>
+  </div>
 
-<!-- SECTION 3: UPGRADE -->
-<section id="upgrade">
-  <div class="section-header reveal">
-    <span class="section-label">progression system</span>
-    <h2 class="section-title">⚜️ Upgrade</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>👑</span><div class="ornament-line"></div>
+  <!-- Layer 1 -->
+  <div class="law-accordion open" id="acc1">
+    <div class="law-accordion-header" onclick="toggleAcc('acc1')">
+      <span class="law-accordion-title">📜 لایه ۱ — قانون اساسی School SMP V</span>
+      <span class="law-accordion-icon">⌄</span>
+    </div>
+    <div class="law-accordion-body">
+
+      <div class="principle-card">
+        <h4>👑 اصل ۱: ساختار جهان و آزادی پایه</h4>
+        <ul>
+          <li>جهان سرور بر پایه آزادی عمل بازیکنان ساخته شده است.</li>
+          <li>هر بازیکن حق دارد مسیر، حکومت، سرزمین و شیوه پیشرفت خود را انتخاب کند.</li>
+          <li>هیچ بازیکنی از ابتدا بر دیگری برتری ذاتی ندارد.</li>
+          <li>قدرت، اعتبار و نفوذ باید در جریان بازی به‌دست آید، نه از ابتدا.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>🏞️ اصل ۲: زمین، مرزبندی و مالکیت</h4>
+        <ul>
+          <li>زمین‌ها در ابتدا آزاد (Unclaimed) هستند.</li>
+          <li>هر بازیکن یا حکومت می‌تواند با تصرف، ساخت‌وساز، علامت‌گذاری و ثبت رسمی، زمین را مالک شود.</li>
+          <li>مالکیت زمین با سیستم اعلام + ثبت معتبر می‌شود.</li>
+          <li>هر بازیکن در آغاز بازی حق دارد ۵ چانک claim کند.</li>
+          <li>تصاحب زمین فقط در صورتی معتبر است که فعالانه مورد استفاده قرار گیرد.</li>
+          <li>زمین‌های رها شده پس از مدت مشخص قابل بازپس‌گیری هستند.</li>
+          <li>تصاحب زمین دیگران بدون اختلاف، قرارداد یا حکم رسمی، غیرقانونی است.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>💰 اصل ۳: تجارت و اقتصاد</h4>
+        <ul>
+          <li>تجارت بین بازیکنان کاملاً آزاد است.</li>
+          <li>همه قراردادهای مالی باید با رضایت دو طرف انجام شود.</li>
+          <li>فریب در معامله یا تغییر توافق بعد از انجام رسمی، جرم محسوب می‌شود.</li>
+          <li>قیمت‌ها آزاد و وابسته به بازار هستند.</li>
+          <li>قراردادهای بزرگ شدیداً پیشنهاد می‌شود که ثبت رسمی شوند.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>⚔️ اصل ۴: جنگ و درگیری</h4>
+        <ul>
+          <li>جنگ فقط با اعلام رسمی قبلی مجاز است، مگر در زمان‌های غیرممنوع.</li>
+          <li>هر جنگی مشروع است اما حتماً باید با اعلام قبلی باشد.</li>
+          <li>فصل صلح بازه‌هایی از زمان است که توسط پادشاه اعلام می‌شود — نقض آن جرم سنگین است.</li>
+          <li>تخریب باید طبق توافق جنگ باشد. غارت در هر حالتی جرم است.</li>
+          <li>حمله بدون اعلام رسمی، جرم سنگین محسوب می‌شود.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>🤝 اصل ۵: قراردادهای رسمی و دیپلماسی</h4>
+        <ul>
+          <li>بازیکنان، Townها و حکومت‌ها می‌توانند قراردادهای رسمی ببندند.</li>
+          <li>قراردادها باید در کانال رسمی ثبت شوند و قابل استناد باشند.</li>
+          <li>نقض قرارداد = دلیل مشروع برای پیگرد قضایی، جریمه یا جنگ.</li>
+          <li>انواع: صلح، تجارت رسمی، عدم حمله، پیمان خراج، غرامت جنگی.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>🏛️ اصل ۶: حکومت‌ها و ساختار سیاسی</h4>
+        <ul>
+          <li>بازیکنان می‌توانند حکومت تشکیل دهند.</li>
+          <li>شکل‌های رسمی حکومت: پادشاهی | جمهوری</li>
+          <li>تفاوت پادشاهی و جمهوری فقط نمایشی و هویتی است.</li>
+          <li>هر حکومت باید پرچم، نام و سبک حکومتی‌اش را ثابت و رسمی نگه دارد.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>👑 اصل ۷: پرچم‌ها و هویت کشورها</h4>
+        <ul>
+          <li>هر حکومت یا کشور باید پرچم رسمی خود را داشته باشد.</li>
+          <li>هر کشور موظف است پرچم رسمی خود را برای پادشاه سرور ارسال کند.</li>
+          <li>تنها پرچم‌های ثبت‌شده توسط پادشاه، پرچم رسمی محسوب می‌شوند.</li>
+          <li>تغییر پرچم رسمی نیز باید با تأیید پادشاه انجام شود.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>📢 اصل ۸: ثبت، اطلاع‌رسانی و بیانیه‌ها</h4>
+        <ul>
+          <li>تمام رویدادهای مهم باید ثبت شوند.</li>
+          <li>اخبار رسمی فقط از کانال اطلاع‌رسانی منتشر می‌شود.</li>
+          <li>افراد، Townها و حکومت‌ها می‌توانند بیانیه رسمی برای پادشاه ارسال کنند.</li>
+          <li>بیانیه‌های ردشده باید دلیل مشخص داشته باشند.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>⚖️ اصل ۹: عدالت و نظم</h4>
+        <ul>
+          <li>تخریب بدون دلیل، دزدی، تقلب و سوءاستفاده از قوانین جرم محسوب می‌شود.</li>
+          <li>رسیدگی به اختلافات توسط قاضی، پادشاه یا شورای تعیین‌شده انجام می‌شود.</li>
+          <li>هدف اصلی قانون، حفظ تعادل بین آزادی، رقابت و نظم است.</li>
+          <li>هیچ بازیکنی نباید بتواند از قانون فرار کند.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>🏪 اصل ۱۰: بازارهای رسمی و بازرگانی</h4>
+        <ul>
+          <li>بازیکنان، Townها و حکومت‌ها می‌توانند بازارهای تجاری ایجاد کنند.</li>
+          <li>بازار ویلیجری رسمی: حداقل ۵۰ ویلیجر فعال + ساختار منظم.</li>
+          <li>بازار آیتم رسمی: حداقل ۳۰ آیتم کاربردی با قیمت مشخص.</li>
+          <li>بازارهای رسمی تحت حمایت حکومت سلطنتی قرار دارند.</li>
+          <li>تخریب، غارت یا خرابکاری در بازار رسمی از سنگین‌ترین جرایم اقتصادی است.</li>
+        </ul>
+        <p style="margin-top:10px;font-style:italic;color:var(--gold-dim);font-size:12px;">«اقتصاد قدرتمند، ستون پادشاهی قدرتمند است.»</p>
+      </div>
+
+      <div class="principle-card">
+        <h4>👑 اصل ۱۱: قانون نهایی</h4>
+        <ul>
+          <li>هیچ قانونی نباید مانع رشد، رقابت و سرگرمی بازیکنان شود.</li>
+          <li>در شرایط خاص و مبهم، تصمیم نهایی با پادشاه است.</li>
+          <li>قدرت پادشاه برای حفظ نظم، تثبیت حاکمیت و جلوگیری از هرج‌ومرج اعمال می‌شود.</li>
+        </ul>
+      </div>
+
+      <div class="principle-card">
+        <h4>👑 اصل ۱۲: نقش پادشاه و اقتدار حاکم</h4>
+        <ul>
+          <li>پادشاه سرور مقام عالی مدیریتی، سیاسی و نماد اتحاد سرور است.</li>
+          <li>پادشاه به‌عنوان یک بازیکن عادی بازی نمی‌کند.</li>
+          <li>پادشاه در این سرور مظهر اقتدار، فرمان و استبداد سلطنتی است.</li>
+          <li>قدرت شاه مطلق است و در چارچوب حاکمیت، تصمیم نهایی با اوست.</li>
+        </ul>
+        <div style="margin-top:12px;background:rgba(201,168,76,0.05);border:1px solid var(--border-gold);border-radius:4px;padding:10px 14px;">
+          <div style="font-size:12px;color:var(--gold);margin-bottom:6px;font-family:'Cinzel',serif;letter-spacing:1px;">مقامات رسمی سرور</div>
+          <div style="font-size:13px;color:var(--text-dim);">۱. The King &nbsp;|&nbsp; ۲. Hand Of The King &nbsp;|&nbsp; ۳. Royal Judge</div>
+        </div>
+        <p style="margin-top:12px;font-style:italic;color:var(--gold-dim);font-size:12px;">«این قانون اساسی برای آن نوشته شده است که School SMP V نه فقط یک سرور، بلکه یک پادشاهی زنده باشد.»</p>
+      </div>
+
     </div>
   </div>
 
-  <div class="upgrade-tabs reveal">
-    <button class="tab-btn active" onclick="switchTab('upgrade','claim')">🏰 ارتقای سرزمین</button>
-    <button class="tab-btn" onclick="switchTab('upgrade','heart')">❤️ ارتقای قلب</button>
-  </div>
-
-  <!-- CLAIM TAB -->
-  <div class="tab-panel active" id="upgrade-claim">
-    <div class="sub-section-title reveal">🏰✨ سیستم ارتقای سرزمین (Claim Upgrade System) 💰👑</div>
-
-    <!-- Point system -->
-    <div class="points-system reveal">
-      <div class="point-item">
-        <div class="point-icon">🪨</div>
-        <div class="point-name">آهن</div>
-        <div class="point-val">= ۱ امتیاز</div>
-      </div>
-      <div class="point-item">
-        <div class="point-icon">🟡</div>
-        <div class="point-name">طلا</div>
-        <div class="point-val">= ۳ امتیاز</div>
-      </div>
-      <div class="point-item">
-        <div class="point-icon">💚</div>
-        <div class="point-name">زمرد</div>
-        <div class="point-val">= ۶ امتیاز</div>
-      </div>
-      <div class="point-item">
-        <div class="point-icon">💎</div>
-        <div class="point-name">الماس</div>
-        <div class="point-val">= ۲۵ امتیاز</div>
-      </div>
-      <div class="point-item">
-        <div class="point-icon">🔩</div>
-        <div class="point-name">نترایت</div>
-        <div class="point-val">= ۱۰۰ امتیاز</div>
-      </div>
+  <!-- Layer 2 -->
+  <div class="law-accordion open" id="acc2">
+    <div class="law-accordion-header" onclick="toggleAcc('acc2')">
+      <span class="law-accordion-title">⚖️ لایه ۲ — قوانین کیفری و قضایی SSMPV</span>
+      <span class="law-accordion-icon">⌄</span>
     </div>
+    <div class="law-accordion-body">
 
-    <!-- Tier: Green -->
-    <div class="tier-section tier-green reveal">
-      <div class="tier-title">
-        <span>🟢 مرحله اول — سطوح ۱ تا ۵</span>
-      </div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 1</div><div class="level-emoji">🌱</div><div class="level-blocks">۶ بلاک</div><div class="level-pts">۱۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 2</div><div class="level-emoji">🌿</div><div class="level-blocks">۷ بلاک</div><div class="level-pts">۱۱۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 3</div><div class="level-emoji">🌳</div><div class="level-blocks">۸ بلاک</div><div class="level-pts">۱۳۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 4</div><div class="level-emoji">🪵</div><div class="level-blocks">۹ بلاک</div><div class="level-pts">۱۶۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 5</div><div class="level-emoji">🏡</div><div class="level-blocks">۱۰ بلاک</div><div class="level-pts">۲۰۰ امتیاز</div></div>
-      </div>
-    </div>
+      <div class="law-section-title">(1) کلیات قوانین کیفری و قضایی</div>
 
-    <!-- Tier: Yellow -->
-    <div class="tier-section tier-yellow reveal">
-      <div class="tier-title"><span>🟡 مرحله دوم — سطوح ۶ تا ۱۰</span></div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 6</div><div class="level-emoji">🏘</div><div class="level-blocks">۱۱ بلاک</div><div class="level-pts">۲۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 7</div><div class="level-emoji">🏙</div><div class="level-blocks">۱۲ بلاک</div><div class="level-pts">۲۹۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 8</div><div class="level-emoji">🏯</div><div class="level-blocks">۱۳ بلاک</div><div class="level-pts">۳۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 9</div><div class="level-emoji">🏰</div><div class="level-blocks">۱۴ بلاک</div><div class="level-pts">۴۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 10</div><div class="level-emoji">⚜️</div><div class="level-blocks">۱۵ بلاک</div><div class="level-pts">۴۷۰ امتیاز</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div class="card">
+          <span class="badge-green">✅ موارد مجاز</span>
+          <ul class="law-list">
+            <li>✔️ مبارزه و PvP با رضایت دو طرف</li>
+            <li>✔️ جنگ‌های رسمی و اعلام شده</li>
+            <li>✔️ استفاده از فارم‌ها با قرارداد رسمی</li>
+            <li>✔️ تجارت، قرارداد و تبادل آیتم</li>
+            <li>✔️ دفاع از خود در شرایط خطر</li>
+            <li>✔️ Claim کردن مکان‌های مجاز</li>
+            <li>✔️ استفاده از امکانات قانونی سرور</li>
+            <li>✔️ Trial by Combat با رضایت دو طرف</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="badge-red">❌ موارد غیر مجاز</span>
+          <ul class="law-list">
+            <li>❌ تقلب، چیت، X-ray، Duplication</li>
+            <li>❌ استفاده از بات‌ها</li>
+            <li>❌ سوءاستفاده از باگ‌ها</li>
+            <li>❌ آزار مستمر و سادیسمانه</li>
+            <li>❌ دمیج در مناطق حفاظت شده</li>
+            <li>❌ خرابکاری عمدی سرور</li>
+            <li>❌ Claim مکان‌های ممنوعه</li>
+            <li>❌ فرار از اجرای حکم دادگاه</li>
+          </ul>
+        </div>
       </div>
-    </div>
 
-    <!-- Tier: Orange -->
-    <div class="tier-section tier-orange reveal">
-      <div class="tier-title"><span>🟠 مرحله سوم — سطوح ۱۱ تا ۱۵</span></div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 11</div><div class="level-emoji">🛡</div><div class="level-blocks">۱۶ بلاک</div><div class="level-pts">۵۵۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 12</div><div class="level-emoji">⚔️</div><div class="level-blocks">۱۷ بلاک</div><div class="level-pts">۶۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 13</div><div class="level-emoji">🏹</div><div class="level-blocks">۱۸ بلاک</div><div class="level-pts">۷۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 14</div><div class="level-emoji">🪖</div><div class="level-blocks">۱۹ بلاک</div><div class="level-pts">۸۵۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 15</div><div class="level-emoji">👑</div><div class="level-blocks">۲۰ بلاک</div><div class="level-pts">۹۷۰ امتیاز</div></div>
-      </div>
-    </div>
+      <div class="law-section-title">(2) مجازات‌های مربوط به جرایم</div>
 
-    <!-- Tier: Red -->
-    <div class="tier-section tier-red reveal">
-      <div class="tier-title"><span>🔴 مرحله چهارم — سطوح ۱۶ تا ۲۰</span></div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 16</div><div class="level-emoji">🔥</div><div class="level-blocks">۲۱ بلاک</div><div class="level-pts">۱۱۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 17</div><div class="level-emoji">⚡️</div><div class="level-blocks">۲۲ بلاک</div><div class="level-pts">۱۲۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 18</div><div class="level-emoji">🌪</div><div class="level-blocks">۲۳ بلاک</div><div class="level-pts">۱۳۹۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 19</div><div class="level-emoji">🩸</div><div class="level-blocks">۲۴ بلاک</div><div class="level-pts">۱۵۵۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 20</div><div class="level-emoji">🗡</div><div class="level-blocks">۲۵ بلاک</div><div class="level-pts">۱۷۲۰ امتیاز</div></div>
+      <div class="penalty-card">
+        <h5>(2-1) قوانین مربوط به تقلب در بازی</h5>
+        <ul>
+          <li><strong style="color:var(--red-light);">الف)</strong> استفاده از X-ray: ⛓️ زندان + 🧹 خدمات عمومی — مدت در دادگاه تعیین می‌شود.</li>
+          <li><strong style="color:var(--red-light);">ب)</strong> کامند ممنوعه: ⛓️ زندان طولانی مدت + 🧹 خدمات عمومی</li>
+          <li><strong style="color:var(--red-light);">پ)</strong> بات برای ماین Ore: 🪦 اعدام و آویزان شدن از چوبه دار + تمامی Armor و Tool</li>
+          <li><strong style="color:var(--red-light);">ج)</strong> هرگونه Duplication: 🪦 اعدام + تمامی Armor و Tool + ⛓️ ۷۲ ساعت زندان</li>
+          <li><strong style="color:var(--red-light);">د)</strong> سایر تقلب‌ها: بر اساس میزان سود چیتر، مدت زندان تعیین می‌شود.</li>
+        </ul>
       </div>
-    </div>
 
-    <!-- Tier: Purple -->
-    <div class="tier-section tier-purple reveal">
-      <div class="tier-title"><span>🟣 مرحله پنجم — سطوح ۲۱ تا ۲۵</span></div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 21</div><div class="level-emoji">☠️</div><div class="level-blocks">۲۶ بلاک</div><div class="level-pts">۱۹۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 22</div><div class="level-emoji">🏛</div><div class="level-blocks">۲۷ بلاک</div><div class="level-pts">۲۰۹۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 23</div><div class="level-emoji">🌌</div><div class="level-blocks">۲۸ بلاک</div><div class="level-pts">۲۲۹۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 24</div><div class="level-emoji">💎</div><div class="level-blocks">۲۹ بلاک</div><div class="level-pts">۲۵۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 25</div><div class="level-emoji">👑</div><div class="level-blocks">۳۰ بلاک</div><div class="level-pts">۲۷۲۰ امتیاز</div></div>
+      <div class="penalty-card">
+        <h5>(2-2) قوانین مربوط به آزار دادن دیگر پلیرها</h5>
+        <ul>
+          <li><strong style="color:var(--red-light);">الف)</strong> Damage در Chunk: 💁 سلب برخی آیتم‌ها بر اساس میزان Damage</li>
+          <li><strong style="color:var(--red-light);">پیوست الف — کشته شدن پلیر:</strong> ⛓️ ۴۸ ساعت زندان</li>
+          <li><strong style="color:var(--red-light);">ب)</strong> کشتن در سرزمین‌های آزاد: 📦 پس دادن آیتم‌ها در زمان تعیین شده / در غیر این صورت ⛓️ ۳۶ ساعت زندان</li>
+          <li><strong style="color:var(--red-light);">ج)</strong> کشتن/Damage بی‌دلیل در Chunk خود: کشتن ⛓️ ۳۶ ساعت / Damage بر اساس شدت</li>
+          <li><strong style="color:var(--red-light);">د)</strong> آزار در قلعه اصلی: کشتن ⛓️ ۷۲ ساعت / Damage ⛓️ ۲۴ ساعت زندان</li>
+          <li><strong style="color:var(--red-light);">ه)</strong> Damage مستمر سادیسمانه: 🔨 سلب تمامی Tool + ⛓️ ۱۲ ساعت زندان</li>
+        </ul>
       </div>
-    </div>
 
-    <!-- Tier: Black -->
-    <div class="tier-section tier-black reveal">
-      <div class="tier-title"><span>⚫️ مرحله نهایی — سطوح ۲۶ تا ۳۰</span></div>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 26</div><div class="level-emoji">🖤</div><div class="level-blocks">۳۱ بلاک</div><div class="level-pts">۲۹۵۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 27</div><div class="level-emoji">⚙️</div><div class="level-blocks">۳۲ بلاک</div><div class="level-pts">۳۱۹۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 28</div><div class="level-emoji">🧱</div><div class="level-blocks">۳۳ بلاک</div><div class="level-pts">۳۴۴۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 29</div><div class="level-emoji">🌑</div><div class="level-blocks">۳۴ بلاک</div><div class="level-pts">۳۷۰۰ امتیاز</div></div>
-        <div class="level-card"><div class="level-num">Level 30</div><div class="level-emoji">🌟</div><div class="level-blocks">۳۵ بلاک</div><div class="level-pts">۳۹۷۰ امتیاز</div></div>
+      <div class="penalty-card">
+        <h5>(2-3) تلاش برای خراب کردن سرور</h5>
+        <ul>
+          <li><strong style="color:var(--red-light);">الف)</strong> هر اقدام مختل‌کننده (از جمله TNT زیاد): ⛓️ ۴۸ ساعت زندان + 🧹 خدمات عمومی</li>
+          <li><strong style="color:var(--red-light);">ب)</strong> تهدید به انجام این امر: 🔨 سلب تمامی Tool + 🧹 خدمات عمومی</li>
+        </ul>
       </div>
+
+      <div class="penalty-card">
+        <h5>(2-4) قوانین مربوط به Claim</h5>
+        <ul>
+          <li><strong style="color:var(--red-light);">الف)</strong> Claim هر مکان در Nether و End: 🪦 اعدام همراه با تمامی Armor و Tool</li>
+        </ul>
+      </div>
+
+      <div class="final-clause">
+        <strong style="color:#e07070;display:block;margin-bottom:8px;">🚨 بندهای نهایی:</strong>
+        <ul style="list-style:none;padding:0;">
+          <li>۱. هرگونه سابقه — فارغ از زمینه آن — در حکم جرم جدید شما تأثیر خواهد داشت.</li>
+          <li>۲. این قوانین در طول جریان بازی و بر اساس اتفاقات جدید یا کشف شدن انواع جدید جرم، بروزرسانی خواهد شد.</li>
+        </ul>
+      </div>
+
     </div>
   </div>
 
-  <!-- HEART TAB -->
-  <div class="tab-panel" id="upgrade-heart">
-    <div class="sub-section-title reveal">⚜️🏆 سیستم Upgrade قلب‌ها 🏆⚜️</div>
-
-    <div class="heart-timeline reveal">
-      <div class="heart-step">
-        <div class="heart-content">
-          <div class="heart-req">🥉 &nbsp; ۲۰ Advancement</div>
-          <div class="heart-reward">❤️ +۱ قلب</div>
-        </div>
-      </div>
-      <div class="heart-step">
-        <div class="heart-content">
-          <div class="heart-req">🥈 &nbsp; ۴۵ Advancement</div>
-          <div class="heart-reward">❤️ +۱ قلب</div>
-        </div>
-      </div>
-      <div class="heart-step">
-        <div class="heart-content">
-          <div class="heart-req">🥇 &nbsp; ۷۰ Advancement</div>
-          <div class="heart-reward">❤️ +۱ قلب</div>
-        </div>
-      </div>
-      <div class="heart-step">
-        <div class="heart-content">
-          <div class="heart-req">👑 &nbsp; ۱۰۰ Advancement</div>
-          <div class="heart-reward">❤️ +۱ قلب</div>
-        </div>
-      </div>
-      <div class="heart-step">
-        <div class="heart-content">
-          <div class="heart-req">🔥 &nbsp; ۱۳۰ Advancement</div>
-          <div class="heart-reward">❤️ +۱ قلب</div>
-        </div>
-      </div>
+  <!-- Layer 3 -->
+  <div class="law-accordion open" id="acc3">
+    <div class="law-accordion-header" onclick="toggleAcc('acc3')">
+      <span class="law-accordion-title">📜 لایه ۳ — قوانین قراردادی و دیپلماتیک SSMPV</span>
+      <span class="law-accordion-icon">⌄</span>
     </div>
+    <div class="law-accordion-body">
 
-    <div class="boss-card reveal">
-      <div class="boss-title">⚔️👑 پاداش ویژه افسانه‌ای 👑⚔️</div>
-      <p style="color:var(--text-dim); margin-bottom:1rem; line-height:2;">
-        هر بازیکنی که تمامی باس‌های اصلی بازی را شکست دهد:
-      </p>
-      <div class="boss-grid">
-        <div class="boss-item">💀 Wither</div>
-        <div class="boss-item">🐉 Ender Dragon</div>
-        <div class="boss-item">🌊 Elder Guardian</div>
-        <div class="boss-item">🧿 Warden</div>
-      </div>
-      <div class="boss-reward">✨ + نیم قلب اضافه دریافت خواهد کرد</div>
-    </div>
+      <div class="principle-card"><h4>(1) اعتبار قراردادها</h4><ul>
+        <li>هر قرارداد رسمی باید در کانال رسمی سرور ثبت شود.</li>
+        <li>قرارداد ثبت‌نشده از حمایت کامل قضایی برخوردار نخواهد بود.</li>
+        <li>قرارداد پس از ثبت و تأیید رسمی معتبر محسوب می‌شود.</li>
+        <li>قراردادهای شفاهی فقط در صورت وجود شاهد معتبر قابل استناد هستند.</li>
+      </ul></div>
 
-    <div class="quote-box reveal">
-      📜⚔️ «قدرت، پاداش کسانی‌ست که خود را ثابت می‌کنند.»
-    </div>
-  </div>
-</section>
+      <div class="principle-card"><h4>(2) شرایط باطل شدن قرارداد</h4><ul>
+        <li>جعل (اسکرین‌شات فیک، چت جعلی)</li>
+        <li>تعارض با قوانین اساسی سرور</li>
+        <li>توافق رسمی دو طرف برای فسخ قرارداد</li>
+      </ul></div>
 
-<div class="sep"></div>
+      <div class="principle-card"><h4>(3) قوانین بدهی و خراج</h4><ul>
+        <li>بدهی ثبت‌شده رسمی و لازم‌الاجرا محسوب می‌شود.</li>
+        <li>بدهکار موظف است در زمان تعیین‌شده پرداخت را انجام دهد.</li>
+        <li>تأخیر طولانی می‌تواند منجر به جریمه، مصادره آیتم‌ها یا زندان شود.</li>
+      </ul></div>
 
-<!-- SECTION 4: RULES -->
-<section id="rules">
-  <div class="section-header reveal">
-    <span class="section-label">royal law & order</span>
-    <h2 class="section-title">📜 قوانین</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>⚖️</span><div class="ornament-line"></div>
-    </div>
-  </div>
+      <div class="principle-card"><h4>(4) قوانین اجاره و واگذاری زمین</h4><ul>
+        <li>مالک زمین می‌تواند بخشی از قلمرو خود را اجاره دهد یا واگذار کند.</li>
+        <li>مدت اجاره و شرایط استفاده باید مشخص باشد.</li>
+        <li>تصرف یا استفاده خارج از مفاد قرارداد، تخلف قراردادی محسوب می‌شود.</li>
+      </ul></div>
 
-  <div class="rules-tabs reveal">
-    <button class="rules-tab-btn active" onclick="switchRulesTab('const')">📜 قانون اساسی</button>
-    <button class="rules-tab-btn" onclick="switchRulesTab('combat')">⚔️ محاکمه با مبارزه</button>
-  </div>
+      <div class="principle-card"><h4>(5) قوانین پیمان‌های سیاسی</h4><ul>
+        <li>پیمان عدم حمله تا پایان مدت قرارداد معتبر است.</li>
+        <li>پیمان صلح باید شامل شرایط پایان جنگ باشد.</li>
+        <li>قراردادهای غرامت باید مقدار و زمان پرداخت را مشخص کنند.</li>
+        <li>پیمان‌های ثبت‌نشده مشروعیت رسمی نخواهند داشت.</li>
+      </ul></div>
 
-  <!-- Constitution -->
-  <div id="rules-const">
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">👑 اصل ۱ — ساختار جهان و آزادی پایه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>جهان سرور بر پایه آزادی عمل بازیکنان ساخته شده است.</li>
-            <li>هر بازیکن حق دارد مسیر خود را انتخاب کند.</li>
-            <li>هیچ بازیکنی از ابتدا بر دیگری برتری ذاتی ندارد.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <div class="principle-card"><h4>(6) قوانین تجارت رسمی</h4><ul>
+        <li>تجارت‌های بزرگ شدیداً توصیه می‌شود که ثبت رسمی شوند.</li>
+        <li>تغییر مفاد معامله پس از توافق رسمی ممنوع است.</li>
+        <li>بازارهای رسمی می‌توانند دارای مالیات مشخص باشند.</li>
+        <li>جعل قرارداد تجاری، قابل پیگرد خواهد بود.</li>
+      </ul></div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏞 اصل ۲ — زمین، مرزبندی و مالکیت</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>زمین‌ها در ابتدا آزاد (Unclaimed) هستند.</li>
-            <li>هر بازیکن می‌تواند با ساخت، علامت‌گذاری و اعلام رسمی، زمین را مالک شود.</li>
-            <li>مالکیت زمین با سیستم «اعلام + ثبت» معتبر می‌شود.</li>
-            <li>افراد می‌توانند در شروع بازی ۵ چانک را claim کنند.</li>
-            <li>در صورت سرمایه‌گذاری، محدودیت چانک کاهش می‌یابد.</li>
-          </ul>
-          <div class="warning-box">
-            ⚠️ محدودیت‌ها: تصاحب زمین فقط در صورتی معتبر است که فعالانه استفاده شود. زمین‌های رها‌شده پس از مدت مشخص قابل بازپس‌گیری هستند. مرزها باید واضح باشند. تصاحب زمین دیگران بدون قرارداد، غیرقانونی است.
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="principle-card"><h4>(7) جانشین</h4><ul>
+        <li>حکومت‌ها می‌توانند جانشین رسمی تعیین کنند.</li>
+        <li>در صورت عدم حضور بازیکن، جانشین پاسخگوی جرایم و پرونده‌های او خواهد بود.</li>
+        <li>انتخاب جانشین حتماً باید ثبت رسمی شود.</li>
+      </ul></div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">💰 اصل ۳ — تجارت و اقتصاد</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>تجارت بین بازیکنان کاملاً آزاد است.</li>
-            <li>همه قراردادهای مالی باید با رضایت دو طرف انجام شود.</li>
-            <li>فریب در معامله یا تغییر توافق بعد از انجام، جرم محسوب می‌شود.</li>
-            <li>قیمت‌ها آزاد و وابسته به بازار هستند.</li>
-            <li>قراردادهای بزرگ باید ثبت رسمی شوند.</li>
-            <li>امکان ایجاد بازار مرکزی وجود دارد.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <div class="principle-card"><h4>(8) قوانین فسخ قرارداد</h4><ul>
+        <li>هر قرارداد می‌تواند بند فسخ مخصوص خود را داشته باشد.</li>
+        <li>فسخ ناگهانی بدون رعایت شرایط، موجب پیگرد می‌شود.</li>
+        <li>قراردادهای زمان‌دار پس از پایان زمان تعیین‌شده خاتمه می‌یابند.</li>
+      </ul></div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">⚔️ اصل ۴ — جنگ و درگیری</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <p>جنگ فقط با اعلام رسمی قبلی مجاز است. دلایل مشروع برای جنگ:</p>
-          <ul>
-            <li>اختلاف مرزی</li>
-            <li>نقض قرارداد</li>
-            <li>رقابت سیاسی</li>
-            <li>کشورگشایی</li>
-          </ul>
-          <div class="warning-box">
-            ⚠️ حمله بدون اعلام = جرم سنگین. غارت و تخریب باید طبق توافق جنگ باشد. پایان جنگ باید رسمی اعلام شود.
-          </div>
-        </div>
-      </div>
-    </div>
+      <div class="principle-card"><h4>(9) اصل تفسیر قرارداد</h4><ul>
+        <li>در صورت ابهام در متن قرارداد، تفسیر نهایی با Royal Judge خواهد بود.</li>
+        <li>متن ثبت‌شده ملاک اصلی قضاوت است، نه ادعاهای بعدی طرفین.</li>
+      </ul></div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🤝 اصل ۵ — قراردادهای رسمی و دیپلماسی</span>
-        <span class="accordion-arrow">▼</span>
+      <div class="principle-card">
+        <h4>(10) محاکمه از طریق مبارزه — Trial by Combat ⚔️</h4>
+        <ul>
+          <li>متهم و شاکی می‌توانند با رضایت کامل دوطرفه، درخواست Trial by Combat کنند.</li>
+          <li>در صورت مخالفت هر یک از طرفین، پرونده به محاکمه عادی ارجاع می‌شود.</li>
+          <li>هر طرف می‌تواند شخصاً مبارزه کند یا نماینده (Champion) معرفی نماید.</li>
+          <li>قوانین، زمان و محل مبارزه توسط قاضی یا پادشاه تعیین می‌شود.</li>
+          <li>نتیجه مبارزه حکم نهایی است و قابل اعتراض نخواهد بود.</li>
+          <li>تقلب، فرار از میدان یا دخالت دیگران موجب شکست خودکار و مجازات خواهد شد.</li>
+          <li>تمامی مبارزات رسمی به‌صورت عمومی برگزار می‌شوند.</li>
+        </ul>
+        <p style="margin-top:10px;font-style:italic;color:var(--gold-dim);font-size:12px;">«هیچ شمشیری بدون رضایت کشیده نخواهد شد.»</p>
       </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <p>بازیکنان و حکومت‌ها می‌توانند قراردادهای رسمی ببندند:</p>
-          <ul>
-            <li>اتحاد (Alliance)</li>
-            <li>صلح (Peace Treaty)</li>
-            <li>تجارت رسمی (Trade Agreement)</li>
-            <li>عدم حمله (Non-Aggression Pact)</li>
-            <li>استعمار تحمیلی (Forced Colonization)</li>
-          </ul>
-          <p style="margin-top:0.8rem;">قراردادها باید در کانال رسمی ثبت شوند. نقض قرارداد = دلیل مشروع برای جنگ یا جریمه.</p>
-        </div>
-      </div>
-    </div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏛 اصل ۶ — حکومت‌ها و سلسله‌ها</span>
-        <span class="accordion-arrow">▼</span>
+      <div class="final-clause">
+        <strong style="color:#e07070;display:block;margin-bottom:8px;">🚨 بند نهایی:</strong>
+        <p style="color:#e07070;font-size:13px;line-height:1.9;">هدف این قوانین، حفظ اعتماد، ثبات سیاسی، نظم دیپلماتیک و جلوگیری از هرج‌ومرج در تعاملات رسمی سرور است. تمامی قراردادها، توافقات و پیمان‌های رسمی در چارچوب اقتدار سلطنتی و قوانین School SMP V معتبر خواهند بود.</p>
       </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <p>بازیکنان می‌توانند حکومت تشکیل دهند: <strong style="color:var(--gold)">پادشاهی</strong> یا <strong style="color:var(--gold)">جمهوری</strong></p>
-          <ul>
-            <li>🏛 جمهوری: درآمد هفتگی کامل از پادشاه دریافت می‌شود.</li>
-            <li>👑 پادشاهی: نصف درآمد جمهوری — اما با فتح سرزمین‌های جدید به امپراطوری تبدیل شده و درآمد دو برابر جمهوری می‌رسد.</li>
-            <li>هر حکومت می‌تواند قلمرو مشخص داشته باشد.</li>
-            <li>امکان تشکیل سلسله (Dynasty) وجود دارد.</li>
-            <li>سلسله می‌تواند بنر اختصاصی داشته باشد.</li>
-            <li>سقوط حکومت از طریق جنگ، انقلاب یا توافق ممکن است.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
 
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">📢 اصل ۷ — ثبت و اطلاع‌رسانی</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>تمام رویدادهای مهم (جنگ، قرارداد، تصرف زمین) باید ثبت شوند.</li>
-            <li>اخبار رسمی فقط از کانال اطلاع‌رسانی منتشر می‌شود.</li>
-            <li>اسناد رسمی قابل استناد در تصمیمات آینده هستند.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">⚖️ اصل ۸ — عدالت و نظم</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>تخریب بدون دلیل، دزدی و تقلب جرم محسوب می‌شود.</li>
-            <li>رسیدگی به اختلافات توسط پادشاه یا شورای تعیین‌شده انجام می‌شود.</li>
-            <li>هدف اصلی قانون: حفظ تعادل بین آزادی و نظم.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">👑 اصل ۹ — قانون نهایی</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>هیچ قانونی نباید مانع رشد، رقابت و سرگرمی بازیکنان شود.</li>
-            <li>در شرایط خاص، تصمیم نهایی با پادشاه است.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">👑 اصل ۱۰ — نقش پادشاه و اقتدار محدود</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <p>پادشاه سرور مقام عالی مدیریتی و نماد اتحاد سرور است. وظیفه اصلی: حفظ نظم و تعادل بین حکومت‌ها.</p>
-          <p style="margin-top:0.8rem; color:var(--gold);">⚖️ اختیارات پادشاه:</p>
-          <ul>
-            <li>میانجی‌گری در اختلافات مهم بین بازیکنان</li>
-            <li>تأیید رسمی قراردادها و اتحادهای بزرگ</li>
-            <li>اعلام پیشنهاد برای شروع یا پایان جنگ‌ها</li>
-            <li>اعطای عناوین و مسئولیت‌های حکومتی</li>
-          </ul>
-          <div class="warning-box">
-            🧠 محدودیت قدرت: تصمیم‌های مهم باید با نظر شورا بررسی شود. پادشاه به‌تنهایی حق لغو حکومت یا مصادره زمین‌ها را ندارد. شاه خود یک بازیکن است و در صورت تصمیم برای منفعت شخصی، با رأی‌گیری عموم مجازات مالی سنگین می‌شود.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Trial by Combat -->
-  <div id="rules-combat" style="display:none;">
-    <div class="accordion-item reveal">
-      <div class="accordion-header open" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏛 ماده ۱ — حق محاکمه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body open">
-        <div class="law-article-body">
-          هر شهروند که به جرم خیانت، دزدی، نقض قرارداد یا هر تخلفی متهم گردد، حق دارد خواستار محاکمه رسمی شود.
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">⚖️ ماده ۲ — شیوه‌های محاکمه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>۱. محاکمه عادی به حکم قاضی</li>
-            <li>۲. ⚔️ محاکمه از طریق مبارزه (Trial by Combat) — صرفاً با رضایت دو طرف</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">⚔️ ماده ۳ — شرط رضایت دوطرفه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>متهم و شاکی هر دو باید به‌طور صریح رضایت دهند.</li>
-            <li>در صورت مخالفت هر یک از طرفین، پرونده به محاکمه عادی ارجاع داده می‌شود.</li>
-            <li>هیچ فردی حق اجبار دیگری به مبارزه را ندارد.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">👑 ماده ۴ — انتخاب نماینده (Champion)</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>شخصاً در مبارزه شرکت کند.</li>
-            <li>یا یک نماینده (Champion) برای نبرد برگزیند.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏟 ماده ۵ — محل و قوانین مبارزه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>مبارزه در میدان رسمی تعیین‌شده توسط حکومت برگزار می‌شود.</li>
-            <li>قوانین مبارزه پیش از آغاز، توسط قاضی یا پادشاه اعلام می‌گردد.</li>
-            <li>نظارت کامل بر اجرای قوانین بر عهده قاضی است.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏆 ماده ۶ — صدور حکم</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>🏆 پیروز → بی‌گناه شناخته می‌شود.</li>
-            <li>☠️ مغلوب → گناهکار شناخته می‌شود.</li>
-          </ul>
-          <div class="warning-box">❗️ این حکم قطعی بوده و هیچ‌گونه اعتراضی پذیرفته نخواهد شد.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">⛔️ ماده ۷ — تخلفات در مبارزه</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>ترک میدان یا فرار → به منزله شکست خودکار</li>
-            <li>تقلب یا سوءاستفاده → شکست + مجازات مضاعف</li>
-            <li>دخالت اشخاص ثالث → موجب مجازات خواهد بود</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">💰 ماده ۸ — شروط و تعهدات (اختیاری)</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>پرداخت وجه</li>
-            <li>واگذاری آیتم یا دارایی</li>
-            <li>انعقاد قرارداد رسمی</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">🏰 ماده ۹ — اختیارات حاکمیت</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>صحت رضایت طرفین را تأیید می‌کند.</li>
-            <li>زمان و شرایط برگزاری مبارزه را تعیین می‌نماید.</li>
-            <li>اجرای حکم را تضمین می‌کند.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="accordion-item reveal">
-      <div class="accordion-header" onclick="toggleAccordion(this)">
-        <span class="accordion-title">📢 ماده ۱۰ — علنی بودن</span>
-        <span class="accordion-arrow">▼</span>
-      </div>
-      <div class="accordion-body">
-        <div class="law-article-body">
-          <ul>
-            <li>تمامی محاکمات به صورت عمومی برگزار می‌شوند.</li>
-            <li>سایر شهروندان مجاز به تماشا خواهند بود.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="quote-box reveal" style="margin-top:2rem;">
-      👑 «هیچ شمشیری بدون رضایت کشیده نخواهد شد، و تنها آنگاه که هر دو طرف بپذیرند، شمشیر برنده خواهد بود.»
     </div>
   </div>
 </section>
 
-<div class="sep"></div>
-
-<!-- SECTION 5: CHANNEL -->
+<!-- ─── SECTION 8: CHANNEL ─── -->
 <section id="channel">
-  <div class="section-header reveal">
-    <span class="section-label">official communications</span>
-    <h2 class="section-title">📢 کانال و گروه</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>👑</span><div class="ornament-line"></div>
-    </div>
+  <div class="section-header">
+    <div class="section-title">📣 کانال و گروه</div>
+    <div class="section-subtitle">Join Us — به ما بپیوندید</div>
   </div>
-
-  <div class="contact-box reveal">
-    <div class="contact-seal">⚜️</div>
-    <p class="contact-desc">
-      برای هرگونه سؤال، پیشنهاد، یا گزارش به یوزرنیم زیر در پیام‌رسان <strong style="color:var(--gold)">Bale</strong> پیام بدید:
+  <div class="parchment channel-card">
+    <p style="font-size:15px;color:var(--text);line-height:2;margin-bottom:8px;">
+      برای پیوستن به سرور یا دریافت اطلاعات بیشتر،<br>در پیام‌رسان <strong style="color:var(--gold);">بله</strong> به آیدی زیر پیام دهید:
     </p>
-    <div class="contact-handle" onclick="copyToClipboard('@parsa811', this)">
-      <span>👑</span>
-      <span>@parsa811</span>
-      <span style="font-size:0.7rem; color:var(--text-dim)">📋 کپی</span>
-    </div>
-    <p style="color:var(--text-dim); font-size:0.8rem; margin-top:1.5rem;">
-      روی آیدی کلیک کن تا کپی بشه ✓
-    </p>
+    <a class="channel-id" href="https://ble.ir/parsa811" target="_blank" rel="noopener">@parsa811</a>
+    <p style="font-size:12px;color:var(--text-dim);">پیام‌رسان بله · Bale Messenger</p>
   </div>
 </section>
 
-<div class="sep"></div>
-
-<!-- SECTION 6: SERVER ADDRESS -->
-<section id="server">
-  <div class="section-header reveal">
-    <span class="section-label">connect to the kingdom</span>
-    <h2 class="section-title">🌐 آدرس سرور</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>⚔️</span><div class="ornament-line"></div>
-    </div>
+<!-- ─── SECTION 9: INVESTMENT ─── -->
+<section id="investment">
+  <div class="section-header">
+    <div class="section-title">💰 صندوق سرمایه‌گذاری</div>
+    <div class="section-subtitle">Investment Fund — اقتصاد پادشاهی</div>
   </div>
 
-  <div class="server-box reveal">
-    <div class="server-label">⚜ برای اتصال به پادشاهی آدرس زیر را وارد کنید ⚜</div>
-    <div style="font-size:3rem; margin:1rem 0;">🏰</div>
-    <div class="server-address-box">
-      <span class="server-address" id="serverAddr">host2.hgmc.ir:24517</span>
-      <button class="copy-btn" onclick="copyAddress()">📋 کپی آدرس</button>
-    </div>
-    <div class="server-online">
-      <div class="online-dot"></div>
-      سرور آنلاین است — اتصال برقرار کنید
-    </div>
-    <p style="color:var(--text-dim); font-size:0.85rem; margin-top:1.5rem;">
-      Minecraft Java Edition &nbsp;|&nbsp; آدرس را در قسمت <em>Add Server</em> وارد کنید
-    </p>
-  </div>
-</section>
-
-<div class="sep"></div>
-
-<!-- SECTION 7: INVESTMENT FUND -->
-<section id="fund">
-  <div class="section-header reveal">
-    <span class="section-label">royal treasury</span>
-    <h2 class="section-title">💰 صندوق سرمایه‌گذاری</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>💎</span><div class="ornament-line"></div>
-    </div>
+  <h3 style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);margin-bottom:18px;letter-spacing:2px;">📊 نرخ تبدیل امتیاز</h3>
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:36px;">
+    <table class="invest-table">
+      <thead>
+        <tr><th>آیتم</th><th>امتیاز</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>🪨 1 Iron Ingot</td><td class="pts">1 Point</td></tr>
+        <tr><td>🥇 1 Gold Ingot</td><td class="pts">3 Points</td></tr>
+        <tr><td>💚 1 Emerald</td><td class="pts">3 Points</td></tr>
+        <tr><td>💎 1 Diamond</td><td class="pts">30 Points</td></tr>
+        <tr><td>🌑 1 Netherite Ingot</td><td class="pts">100 Points</td></tr>
+      </tbody>
+    </table>
   </div>
 
-  <div class="sub-section-title reveal">⚙️ سیستم تبدیل امتیاز — Point Conversion</div>
-
-  <div class="points-system reveal">
-    <div class="point-item">
-      <div class="point-icon">🪨</div>
-      <div class="point-name">۱ آهن</div>
-      <div class="point-val">= ۱ امتیاز</div>
-    </div>
-    <div class="point-item">
-      <div class="point-icon">🟡</div>
-      <div class="point-name">۱ طلا</div>
-      <div class="point-val">= ۳ امتیاز</div>
-    </div>
-    <div class="point-item">
-      <div class="point-icon">💚</div>
-      <div class="point-name">۱ زمرد</div>
-      <div class="point-val">= ۶ امتیاز</div>
-    </div>
-    <div class="point-item">
-      <div class="point-icon">💎</div>
-      <div class="point-name">۱ الماس</div>
-      <div class="point-val">= ۲۵ امتیاز</div>
-    </div>
-    <div class="point-item">
-      <div class="point-icon">🔩</div>
-      <div class="point-name">۱ نترایت</div>
-      <div class="point-val">= ۱۰۰ امتیاز</div>
-    </div>
-  </div>
-
-  <div class="sub-section-title reveal">🏰✨ سیستم ارتقای سرزمین — Claim Upgrade System 💰👑</div>
-
-  <div style="display:grid; gap:1.5rem;">
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(39,174,96,0.08), var(--bg-card));">
-      <h3 style="color:#5dd98e; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">🟢 سطوح ۱ تا ۵ — مرحله اول</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 1</div><div class="level-emoji">🌱</div><div class="level-blocks">۶ بلاک</div><div class="level-pts">۱۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 2</div><div class="level-emoji">🌿</div><div class="level-blocks">۷ بلاک</div><div class="level-pts">۱۱۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 3</div><div class="level-emoji">🌳</div><div class="level-blocks">۸ بلاک</div><div class="level-pts">۱۳۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 4</div><div class="level-emoji">🪵</div><div class="level-blocks">۹ بلاک</div><div class="level-pts">۱۶۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 5</div><div class="level-emoji">🏡</div><div class="level-blocks">۱۰ بلاک</div><div class="level-pts">۲۰۰ pts</div></div>
-      </div>
-    </div>
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(241,196,15,0.08), var(--bg-card));">
-      <h3 style="color:#f1c40f; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">🟡 سطوح ۶ تا ۱۰ — مرحله دوم</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 6</div><div class="level-emoji">🏘</div><div class="level-blocks">۱۱ بلاک</div><div class="level-pts">۲۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 7</div><div class="level-emoji">🏙</div><div class="level-blocks">۱۲ بلاک</div><div class="level-pts">۲۹۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 8</div><div class="level-emoji">🏯</div><div class="level-blocks">۱۳ بلاک</div><div class="level-pts">۳۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 9</div><div class="level-emoji">🏰</div><div class="level-blocks">۱۴ بلاک</div><div class="level-pts">۴۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 10</div><div class="level-emoji">⚜️</div><div class="level-blocks">۱۵ بلاک</div><div class="level-pts">۴۷۰ pts</div></div>
-      </div>
-    </div>
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(230,126,34,0.08), var(--bg-card));">
-      <h3 style="color:#e67e22; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">🟠 سطوح ۱۱ تا ۱۵ — مرحله سوم</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 11</div><div class="level-emoji">🛡</div><div class="level-blocks">۱۶ بلاک</div><div class="level-pts">۵۵۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 12</div><div class="level-emoji">⚔️</div><div class="level-blocks">۱۷ بلاک</div><div class="level-pts">۶۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 13</div><div class="level-emoji">🏹</div><div class="level-blocks">۱۸ بلاک</div><div class="level-pts">۷۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 14</div><div class="level-emoji">🪖</div><div class="level-blocks">۱۹ بلاک</div><div class="level-pts">۸۵۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 15</div><div class="level-emoji">👑</div><div class="level-blocks">۲۰ بلاک</div><div class="level-pts">۹۷۰ pts</div></div>
-      </div>
-    </div>
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(231,76,60,0.08), var(--bg-card));">
-      <h3 style="color:#e74c3c; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">🔴 سطوح ۱۶ تا ۲۰ — مرحله چهارم</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 16</div><div class="level-emoji">🔥</div><div class="level-blocks">۲۱ بلاک</div><div class="level-pts">۱۱۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 17</div><div class="level-emoji">⚡️</div><div class="level-blocks">۲۲ بلاک</div><div class="level-pts">۱۲۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 18</div><div class="level-emoji">🌪</div><div class="level-blocks">۲۳ بلاک</div><div class="level-pts">۱۳۹۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 19</div><div class="level-emoji">🩸</div><div class="level-blocks">۲۴ بلاک</div><div class="level-pts">۱۵۵۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 20</div><div class="level-emoji">🗡</div><div class="level-blocks">۲۵ بلاک</div><div class="level-pts">۱۷۲۰ pts</div></div>
-      </div>
-    </div>
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(155,89,182,0.08), var(--bg-card));">
-      <h3 style="color:#9b59b6; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">🟣 سطوح ۲۱ تا ۲۵ — مرحله پنجم</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 21</div><div class="level-emoji">☠️</div><div class="level-blocks">۲۶ بلاک</div><div class="level-pts">۱۹۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 22</div><div class="level-emoji">🏛</div><div class="level-blocks">۲۷ بلاک</div><div class="level-pts">۲۰۹۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 23</div><div class="level-emoji">🌌</div><div class="level-blocks">۲۸ بلاک</div><div class="level-pts">۲۲۹۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 24</div><div class="level-emoji">💎</div><div class="level-blocks">۲۹ بلاک</div><div class="level-pts">۲۵۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 25</div><div class="level-emoji">👑</div><div class="level-blocks">۳۰ بلاک</div><div class="level-pts">۲۷۲۰ pts</div></div>
-      </div>
-    </div>
-
-    <div class="card reveal" style="background: linear-gradient(135deg, rgba(80,80,80,0.12), var(--bg-card));">
-      <h3 style="color:#aaa; font-family:'Cinzel',serif; margin-bottom:1.2rem; font-size:1rem;">⚫️ سطوح ۲۶ تا ۳۰ — مرحله نهایی</h3>
-      <div class="level-grid">
-        <div class="level-card"><div class="level-num">Level 26</div><div class="level-emoji">🖤</div><div class="level-blocks">۳۱ بلاک</div><div class="level-pts">۲۹۵۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 27</div><div class="level-emoji">⚙️</div><div class="level-blocks">۳۲ بلاک</div><div class="level-pts">۳۱۹۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 28</div><div class="level-emoji">🧱</div><div class="level-blocks">۳۳ بلاک</div><div class="level-pts">۳۴۴۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 29</div><div class="level-emoji">🌑</div><div class="level-blocks">۳۴ بلاک</div><div class="level-pts">۳۷۰۰ pts</div></div>
-        <div class="level-card"><div class="level-num">Level 30</div><div class="level-emoji">🌟</div><div class="level-blocks">۳۵ بلاک</div><div class="level-pts">۳۹۷۰ pts</div></div>
-      </div>
-    </div>
-
+  <h3 style="font-family:'Cinzel',serif;font-size:16px;color:var(--gold);margin-bottom:18px;letter-spacing:2px;">🗺️ سیستم ارتقای سرزمین — Claim Upgrade System</h3>
+  <div class="card claim-table-wrap" style="padding:0;overflow:auto;">
+    <table class="claim-table">
+      <thead>
+        <tr><th>سطح</th><th>نشان</th><th>بلاک</th><th>امتیاز</th></tr>
+      </thead>
+      <tbody>
+        <tr class="tier-header th-green"><td colspan="4">🟢 سطوح مبتدی</td></tr>
+        <tr class="tier-green"><td>Level 1</td><td>🌱</td><td>6 blocks</td><td>100 pts</td></tr>
+        <tr class="tier-green"><td>Level 2</td><td>🌿</td><td>7 blocks</td><td>110 pts</td></tr>
+        <tr class="tier-green"><td>Level 3</td><td>🌳</td><td>8 blocks</td><td>130 pts</td></tr>
+        <tr class="tier-green"><td>Level 4</td><td>🪵</td><td>9 blocks</td><td>160 pts</td></tr>
+        <tr class="tier-green"><td>Level 5</td><td>🏡</td><td>10 blocks</td><td>200 pts</td></tr>
+        <tr class="tier-header th-yellow"><td colspan="4">🟡 سطوح میانی</td></tr>
+        <tr class="tier-yellow"><td>Level 6</td><td>🏘</td><td>11 blocks</td><td>240 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 7</td><td>🏙</td><td>12 blocks</td><td>290 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 8</td><td>🏯</td><td>13 blocks</td><td>340 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 9</td><td>🏰</td><td>14 blocks</td><td>400 pts</td></tr>
+        <tr class="tier-yellow"><td>Level 10</td><td>⚜️</td><td>15 blocks</td><td>470 pts</td></tr>
+        <tr class="tier-header th-orange"><td colspan="4">🟠 سطوح پیشرفته</td></tr>
+        <tr class="tier-orange"><td>Level 11</td><td>🛡</td><td>16 blocks</td><td>550 pts</td></tr>
+        <tr class="tier-orange"><td>Level 12</td><td>⚔️</td><td>17 blocks</td><td>640 pts</td></tr>
+        <tr class="tier-orange"><td>Level 13</td><td>🏹</td><td>18 blocks</td><td>740 pts</td></tr>
+        <tr class="tier-orange"><td>Level 14</td><td>🪖</td><td>19 blocks</td><td>850 pts</td></tr>
+        <tr class="tier-orange"><td>Level 15</td><td>👑</td><td>20 blocks</td><td>970 pts</td></tr>
+        <tr class="tier-header th-red"><td colspan="4">🔴 سطوح ارشد</td></tr>
+        <tr class="tier-red"><td>Level 16</td><td>🔥</td><td>21 blocks</td><td>1100 pts</td></tr>
+        <tr class="tier-red"><td>Level 17</td><td>⚡️</td><td>22 blocks</td><td>1240 pts</td></tr>
+        <tr class="tier-red"><td>Level 18</td><td>🌪</td><td>23 blocks</td><td>1390 pts</td></tr>
+        <tr class="tier-red"><td>Level 19</td><td>🩸</td><td>24 blocks</td><td>1550 pts</td></tr>
+        <tr class="tier-red"><td>Level 20</td><td>🗡</td><td>25 blocks</td><td>1720 pts</td></tr>
+        <tr class="tier-header th-purple"><td colspan="4">🟣 سطوح نخبه</td></tr>
+        <tr class="tier-purple"><td>Level 21</td><td>☠️</td><td>26 blocks</td><td>1900 pts</td></tr>
+        <tr class="tier-purple"><td>Level 22</td><td>🏛</td><td>27 blocks</td><td>2090 pts</td></tr>
+        <tr class="tier-purple"><td>Level 23</td><td>🌌</td><td>28 blocks</td><td>2290 pts</td></tr>
+        <tr class="tier-purple"><td>Level 24</td><td>💎</td><td>29 blocks</td><td>2500 pts</td></tr>
+        <tr class="tier-purple"><td>Level 25</td><td>👑</td><td>30 blocks</td><td>2720 pts</td></tr>
+        <tr class="tier-header th-black"><td colspan="4">⚫️ سطوح اسطوره‌ای</td></tr>
+        <tr class="tier-black"><td>Level 26</td><td>🖤</td><td>31 blocks</td><td>2950 pts</td></tr>
+        <tr class="tier-black"><td>Level 27</td><td>⚙️</td><td>32 blocks</td><td>3190 pts</td></tr>
+        <tr class="tier-black"><td>Level 28</td><td>🧱</td><td>33 blocks</td><td>3440 pts</td></tr>
+        <tr class="tier-black"><td>Level 29</td><td>🌑</td><td>34 blocks</td><td>3700 pts</td></tr>
+        <tr class="tier-black"><td>Level 30</td><td>🌟</td><td>35 blocks</td><td>3970 pts</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
-<div class="sep"></div>
-
-<!-- SECTION: RANKS -->
-<section id="ranks">
-  <div class="section-header reveal">
-    <span class="section-label">royal hierarchy</span>
-    <h2 class="section-title">👑 مقام‌ها</h2>
-    <div class="ornament">
-      <div class="ornament-line"></div><span>⚜️</span><div class="ornament-line"></div>
-    </div>
-    <p style="color:var(--text-dim); font-size:0.9rem; margin-top:1rem;">بزرگان و مقامات رسمی پادشاهی School SMP IV</p>
-  </div>
-
-  <div class="ranks-grid">
-    <div class="rank-card rank-king reveal">
-      <div class="rank-badge">👑</div>
-      <div class="rank-title">مقام اول</div>
-      <div class="rank-name">رحمان</div>
-      <div class="rank-divider"></div>
-      <span class="rank-role">The King</span>
-    </div>
-    <div class="rank-card rank-hand reveal">
-      <div class="rank-badge">⚔️</div>
-      <div class="rank-title">مقام دوم</div>
-      <div class="rank-name">بهزادی</div>
-      <div class="rank-divider"></div>
-      <span class="rank-role">Hand of the King</span>
-    </div>
-    <div class="rank-card rank-judge reveal">
-      <div class="rank-badge">⚖️</div>
-      <div class="rank-title">مقام سوم</div>
-      <div class="rank-name">کیاوش</div>
-      <div class="rank-divider"></div>
-      <span class="rank-role">Royal Judge</span>
-    </div>
-  </div>
-</section>
+</main>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">⚜ School SMP IV ⚜</div>
-  <p style="margin-bottom:0.5rem;">پادشاهی مدرسه — جایی که تاریخ نوشته می‌شود</p>
-  <p style="font-size:0.75rem; color:#4a3520;">
-    «هیچ شمشیری بدون رضایت کشیده نخواهد شد.»
-  </p>
+  <div style="margin-bottom:8px;font-size:20px;letter-spacing:8px;color:var(--gold-dim);">⚜ ━━━━━━━━ ⚜</div>
+  School SMP V &copy; 1404 — All rights reserved ⚜️
 </footer>
 
 <script>
 // ─── PARTICLES ───
-(function(){
-  const container = document.getElementById('particles');
-  for(let i=0; i<30; i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `
-      left:${Math.random()*100}%;
-      width:${Math.random()*2+1}px;
-      height:${Math.random()*2+1}px;
-      animation-duration:${8+Math.random()*15}s;
-      animation-delay:${Math.random()*10}s;
-      opacity:${Math.random()*0.5};
-    `;
-    container.appendChild(p);
-  }
-})();
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function Particle() {
+  this.x = Math.random() * canvas.width;
+  this.y = Math.random() * canvas.height;
+  this.size = Math.random() * 1.4 + 0.3;
+  this.speedX = (Math.random() - 0.5) * 0.3;
+  this.speedY = -Math.random() * 0.4 - 0.1;
+  this.opacity = Math.random() * 0.5 + 0.1;
+  this.life = 1;
+  this.decay = Math.random() * 0.003 + 0.001;
+}
+
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach((p, i) => {
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.life -= p.decay;
+    if (p.life <= 0 || p.y < -10) {
+      particles[i] = new Particle();
+      particles[i].y = canvas.height + 10;
+    }
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    const alpha = p.opacity * p.life;
+    ctx.fillStyle = `rgba(201,168,76,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ─── COPY BUTTONS ───
+function copyAddr() {
+  navigator.clipboard.writeText('host2.hgmc.ir:24517').then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'کپی شد! ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 کپی'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+function copyAddr2() {
+  navigator.clipboard.writeText('host2.hgmc.ir:24517').then(() => {
+    const btn = document.getElementById('copyBtn2');
+    btn.textContent = 'کپی شد! ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 کپی'; btn.classList.remove('copied'); }, 2000);
+  });
+}
 
 // ─── HAMBURGER ───
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
-hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-function closeMobileMenu(){ mobileMenu.classList.remove('open'); }
-
-// ─── COPY FUNCTIONS ───
-function copyToClipboard(text, el){
-  navigator.clipboard.writeText(text).then(()=>{
-    const orig = el.querySelector('span:last-child').textContent;
-    el.querySelector('span:last-child').textContent = '✓ کپی شد!';
-    setTimeout(()=>{ el.querySelector('span:last-child').textContent = orig; }, 2000);
-  });
-}
-function copyAddress(){
-  const addr = document.getElementById('serverAddr').textContent;
-  navigator.clipboard.writeText(addr).then(()=>{
-    const btn = document.querySelector('.copy-btn');
-    btn.textContent = '✓ کپی شد!';
-    setTimeout(()=>{ btn.textContent = '📋 کپی آدرس'; }, 2000);
-  });
-}
-
-// ─── TABS (upgrade/fund) ───
-function switchTab(section, tab){
-  const panels = document.querySelectorAll(`#${section} .tab-panel`);
-  const btns = document.querySelectorAll(`#${section} .tab-btn`);
-  panels.forEach(p=>p.classList.remove('active'));
-  btns.forEach(b=>b.classList.remove('active'));
-  document.getElementById(`${section}-${tab}`).classList.add('active');
-  event.target.classList.add('active');
-}
-
-// ─── RULES TABS ───
-function switchRulesTab(tab){
-  document.getElementById('rules-const').style.display = tab==='const'?'block':'none';
-  document.getElementById('rules-combat').style.display = tab==='combat'?'block':'none';
-  document.querySelectorAll('.rules-tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active', (i===0&&tab==='const')||(i===1&&tab==='combat'));
-  });
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+function closeMobile() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
 }
 
 // ─── ACCORDION ───
-function toggleAccordion(header){
-  const body = header.nextElementSibling;
-  const isOpen = header.classList.contains('open');
-  header.classList.toggle('open', !isOpen);
-  body.classList.toggle('open', !isOpen);
+function toggleAcc(id) {
+  const acc = document.getElementById(id);
+  acc.classList.toggle('open');
 }
 
-// ─── SCROLL REVEAL ───
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
+// ─── SCROLL ANIMATIONS ───
+const sections = document.querySelectorAll('section:not(#hero)');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
     }
   });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-revealEls.forEach(el=>observer.observe(el));
+}, { threshold: 0.08 });
+sections.forEach(s => observer.observe(s));
+
+// ─── On desktop, accordion open by default ───
+if (window.innerWidth < 768) {
+  ['acc1','acc2','acc3'].forEach(id => {
+    document.getElementById(id).classList.remove('open');
+  });
+}
 </script>
 </body>
 </html>
