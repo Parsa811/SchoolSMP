@@ -1249,6 +1249,125 @@ section[id] { scroll-margin-top: 80px; }
 .invest-table .pts { color: var(--gold-light); font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: 1px; }
 .invest-table .item-icon { font-size: 20px; margin-left: 10px; vertical-align: middle; }
 .invest-wrap { border: 1px solid var(--border-gold); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-deep); margin-bottom: 40px; }
+.royal-calc-card {
+  position: relative;
+  margin-top: -10px;
+  margin-bottom: 44px;
+  padding: 28px;
+  border: 1px solid var(--border-gold);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(201,168,76,0.08), rgba(5,5,20,0.9) 40%, rgba(10,10,28,0.92)),
+    radial-gradient(circle at top right, rgba(240,192,64,0.12), transparent 35%);
+  box-shadow: var(--shadow-deep), inset 0 0 0 1px rgba(255,255,255,0.02);
+  overflow: hidden;
+}
+.royal-calc-card::before {
+  content: '⚜';
+  position: absolute;
+  top: 18px;
+  left: 22px;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 30px;
+  color: rgba(201,168,76,0.25);
+  text-shadow: 0 0 18px rgba(201,168,76,0.18);
+  pointer-events: none;
+}
+.royal-calc-head { margin-bottom: 22px; }
+.royal-calc-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--gold-pale);
+  text-transform: uppercase;
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.28);
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+.royal-calc-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(22px, 3vw, 32px);
+  color: var(--gold-light);
+  text-shadow: 0 0 18px rgba(201,168,76,0.18);
+  margin-bottom: 8px;
+}
+.royal-calc-desc {
+  color: var(--text-dim);
+  line-height: 1.9;
+  max-width: 720px;
+}
+.royal-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.royal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.royal-field span {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--gold-pale);
+  text-transform: uppercase;
+}
+.royal-field select,
+.royal-field input {
+  appearance: none;
+  width: 100%;
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(201,168,76,0.28);
+  background: rgba(5,5,20,0.8);
+  color: var(--text);
+  font-family: 'Raleway', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.royal-field select:focus,
+.royal-field input:focus {
+  border-color: var(--border-bright);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.12), var(--glow-sm);
+}
+.royal-calc-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(8,8,22,0.88));
+  border: 1px solid rgba(201,168,76,0.22);
+}
+.royal-calc-label {
+  color: var(--text-dim);
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+.royal-calc-value {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(22px, 3vw, 34px);
+  color: var(--gold-light);
+  text-shadow: 0 0 14px rgba(201,168,76,0.2);
+}
+.royal-calc-formula {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 12px;
+  letter-spacing: 0.8px;
+}
+@media (max-width: 720px) {
+  .royal-calc-grid { grid-template-columns: 1fr; }
+  .royal-calc-result { flex-direction: column; align-items: flex-start; }
+}
 
 /* ═══════════════════════════════════════════
    HALL OF HEROES
@@ -1396,6 +1515,7 @@ footer {
     <li><a href="#laws">قوانین</a></li>
     <li><a href="#oath">سوگند</a></li>
     <li><a href="#channel">کانال</a></li>
+    <li><a href="#investment">صندوق سرمایه‌گذاری</a></li>
   </ul>
   <div class="hamburger" id="ham"><span></span><span></span><span></span></div>
 </nav>
@@ -1413,7 +1533,7 @@ footer {
   <a href="#laws" onclick="closeNav()">⚖️ قوانین</a>
   <a href="#oath" onclick="closeNav()">🤝 سوگند سلطنتی</a>
   <a href="#channel" onclick="closeNav()">📣 کانال</a>
-  <a href="#investment" onclick="closeNav()">💰 صندوق</a>
+  <a href="#investment" onclick="closeNav()">💰 صندوق سرمایه‌گذاری</a>
   <a href="#heroes" onclick="closeNav()">🏆 تالار قهرمانان</a>
 </div>
 
@@ -1688,23 +1808,35 @@ footer {
 <section id="territories">
   <div class="section-header">
     <div class="section-eyebrow">Active Territories · نقشه قدرت</div>
-    <div class="section-title">🗺️ سرزمین‌های حال حاضر</div>
-    <div class="section-desc">سرزمین‌ها و امپراتوری‌های فعال در این پادشاهی</div>
+    <div class="section-title">🗺️ سرزمین‌ها</div>
+    <div class="section-desc">فهرست سرزمین‌های ثبت‌شده در این پادشاهی</div>
   </div>
   <div class="territories-wrap">
     <table class="territories-table">
-      <thead><tr><th style="width:60px;">#</th><th>نام سرزمین</th><th>مالک / حاکم</th><th>وضعیت</th></tr></thead>
+      <thead><tr><th style="width:33%;">پلیر</th><th style="width:33%;">یوزنیم</th><th style="width:34%;">سرزمین</th></tr></thead>
       <tbody>
-        <tr><td class="territories-row-num">I</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
-        <tr><td class="territories-row-num">II</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
-        <tr><td class="territories-row-num">III</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
-        <tr><td class="territories-row-num">IV</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
-        <tr><td class="territories-row-num">V</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
-        <tr><td class="territories-row-num">VI</td><td>(در انتظار ثبت...)</td><td>(در انتظار...)</td><td>—</td></tr>
+        <tr><td>Mamad804</td><td>ممد</td><td>Kingdom of Storm's End</td></tr>
+        <tr><td>Aripax</td><td>آرین</td><td>Kingdom of Winterfell</td></tr>
+        <tr><td>Az2000</td><td>زیلایی</td><td>Kingdom of Arya Land</td></tr>
+        <tr><td>amirali44p</td><td>پورطالب</td><td>Republic of PooryLand</td></tr>
+        <tr><td>HamedCarlos10</td><td>حامد</td><td>Kingdom of Great Hamed</td></tr>
+        <tr><td>DonaldJerryTrump</td><td>آقاجری</td><td>Republic of DONALDJERRYTRUMP</td></tr>
+        <tr><td>King_Cheragh</td><td>چراغی</td><td>Republic of Cheragh</td></tr>
+        <tr><td>SomeonewithAPLAN</td><td>کیاوش</td><td>Vanderlinde Socialist Republic</td></tr>
+        <tr><td>King_Pashe</td><td>احمدی</td><td>Fascist Republic of Iran</td></tr>
+        <tr><td>alireza</td><td>احمدی نیا</td><td>The Republic Of ALIZ</td></tr>
+        <tr><td>PEZESHKIAN</td><td>امینی</td><td>Kingdom of The Magic Cult</td></tr>
+        <tr><td>Mahdad_Morad</td><td>مهداد</td><td>Absolute and Royal Kingdom of Kyoto</td></tr>
+        <tr><td>oldking</td><td>چرخاب</td><td>Kingdom of Eagles Nest</td></tr>
+        <tr><td>warloye_xd_syler</td><td>پسرخاله چرخاب</td><td>Kingdom of GodOfTime</td></tr>
+        <tr><td>ARSENALFAN</td><td>ملکشاهی</td><td>The Kingdom Of Gunner Sons</td></tr>
+        <tr><td>Dr_Behzadi</td><td>بهزادی</td><td>Kingdom of Islamic Democracy</td></tr>
+        <tr><td>Parhambn</td><td>پرهام</td><td>Killer Whale Kingdom</td></tr>
+        <tr><td>Unkown</td><td>شروین</td><td>Kingdom of Shervin Abad</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="alert-box alert-gold" style="margin-top:18px;text-align:center;font-size:13px;">اطلاعات این بخش به‌زودی تکمیل می‌شود.</div>
+  <div class="alert-box alert-gold" style="margin-top:18px;text-align:center;font-size:13px;">اطلاعات این بخش اکنون تکمیل شد.</div>
 </section>
 
 <!-- ══════════════════════════════════
@@ -1939,6 +2071,39 @@ footer {
       </tbody>
     </table>
   </div>
+
+  <div class="royal-calc-card">
+    <div class="royal-calc-head">
+      <div class="royal-calc-badge">⚜ Royal Calculator</div>
+      <div class="royal-calc-title">ماشین‌حساب سلطنتی</div>
+      <div class="royal-calc-desc">نوع پرداخت را انتخاب کن و عدد را وارد کن تا امتیاز نهایی دقیقاً محاسبه شود.</div>
+    </div>
+
+    <div class="royal-calc-grid">
+      <label class="royal-field">
+        <span>نوع پرداخت</span>
+        <select id="royalPayType" onchange="updateRoyalCalc()">
+          <option value="1" data-label="Iron Ingot">🪨 Iron Ingot — 1 Point</option>
+          <option value="3" data-label="Gold Ingot">🥇 Gold Ingot — 3 Points</option>
+          <option value="3" data-label="Emerald">💚 Emerald — 3 Points</option>
+          <option value="30" data-label="Diamond">💎 Diamond — 30 Points</option>
+          <option value="100" data-label="Netherite Ingot">🌑 Netherite Ingot — 100 Points</option>
+        </select>
+      </label>
+
+      <label class="royal-field">
+        <span>تعداد</span>
+        <input id="royalPayAmount" type="number" min="0" step="1" value="1" oninput="updateRoyalCalc()">
+      </label>
+    </div>
+
+    <div class="royal-calc-result">
+      <div class="royal-calc-label">امتیاز دریافتی</div>
+      <div class="royal-calc-value" id="royalCalcResult">1 پوینت</div>
+    </div>
+    <div class="royal-calc-formula" id="royalCalcFormula">1 × Iron Ingot × 1 = 1 پوینت</div>
+  </div>
+
   <div class="subsection-title"><span>🗺️</span> جدول ارتقای سرزمین<div class="subsection-title-line"></div></div>
   <div class="claim-wrap">
     <table class="claim-table">
@@ -2143,6 +2308,25 @@ function animateCounters() {
   });
 }
 setTimeout(animateCounters, 2200);
+
+/* ROYAL CALCULATOR */
+function updateRoyalCalc() {
+  const select = document.getElementById('royalPayType');
+  const amountEl = document.getElementById('royalPayAmount');
+  const resultEl = document.getElementById('royalCalcResult');
+  const formulaEl = document.getElementById('royalCalcFormula');
+  if (!select || !amountEl || !resultEl || !formulaEl) return;
+
+  const factor = Number(select.value) || 0;
+  const amount = Math.max(0, Number(amountEl.value) || 0);
+  const opt = select.options[select.selectedIndex];
+  const label = opt?.dataset.label || opt?.textContent.split('—')[0].trim() || 'Item';
+  const total = factor * amount;
+
+  resultEl.textContent = `${total.toLocaleString('en-US')} پوینت`;
+  formulaEl.textContent = `${amount.toLocaleString('en-US')} × ${label} × ${factor} = ${total.toLocaleString('en-US')} پوینت`;
+}
+updateRoyalCalc();
 
 /* ROTATING QUOTES */
 const quotes = [
